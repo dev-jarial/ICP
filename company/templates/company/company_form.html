@@ -1,18 +1,281 @@
+{% load static %}
 {% block content %}
+<style>
+    /* Global Styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+        background: linear-gradient(to right, #1e3c72, #2a5298);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        flex-direction: column;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Matrix Background Effect */
+    .matrix-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 0;
+    }
+
+    .matrix-text {
+        position: absolute;
+        font-size: 40px;
+        font-weight: 800;
+        color: white;
+        text-shadow: 0 0 8px rgb(176, 176, 176);
+        white-space: nowrap;
+        animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+        0% {
+            transform: translateY(-100vh);
+            opacity: 0;
+        }
+        10% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(100vh);
+            opacity: 0;
+        }
+    }
+
+    /* Main Container */
+    .container {
+        position: relative;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        max-width: 600px;
+        width: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        animation: fadeIn 1s ease-in-out;
+        z-index: 2;
+    }
+
+    h2 {
+        font-size: 26px;
+        color: #ffffff;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+
+    p {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 15px;
+        margin-bottom: 20px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    input[type="text"], textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        font-size: 16px;
+        transition: 0.3s;
+        outline: none;
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        text-align: center;
+    }
+
+    input[type="text"]::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    input[type="text"]:focus {
+        background: rgba(255, 255, 255, 0.3);
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    }
+
+    .btn-primary {
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        color: white;
+        background: linear-gradient(135deg, #ff7eb3, #ff758c);
+        transition: all 0.3s ease-in-out;
+        cursor: pointer;
+    }
+
+    .btn-primary:hover {
+        transform: scale(1.05);
+        background: linear-gradient(135deg, #ff758c, #ff4f70);
+    }
+
+    /* Loading Spinner */
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top: 4px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 10px auto;
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    /* Scraped Data Output */
+    .output-container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+        max-width: 600px;
+        width: 100%;
+        color: white;
+        text-align: left;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .data-table th, .data-table td {
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 8px;
+        text-align: left;
+        color: white;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .container {
+            max-width: 90%;
+            padding: 30px;
+        }
+
+        h2 {
+            font-size: 22px;
+        }
+
+        p {
+            font-size: 14px;
+        }
+
+        input[type="text"] {
+            font-size: 14px;
+            padding: 10px;
+        }
+
+        .btn-primary {
+            font-size: 14px;
+            padding: 10px;
+        }
+
+        .matrix-text {
+            font-size: 25px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .container {
+            max-width: 95%;
+            padding: 25px;
+        }
+
+        h2 {
+            font-size: 20px;
+        }
+
+        p {
+            font-size: 13px;
+        }
+
+        input[type="text"] {
+            font-size: 13px;
+            padding: 8px;
+        }
+
+        .btn-primary {
+            font-size: 13px;
+            padding: 8px;
+        }
+
+        .matrix-text {
+            font-size: 20px;
+        }
+    }
+
+</style>
+
+<!-- Matrix Background Effect -->
+<div class="matrix-background"></div>
+
+<!-- Main Scraper Form -->
 <div class="container">
-    <h2>Add Company Details</h2>
+    <h2>Company Data Scraper</h2>
+    <p>Enter the company's website URL below, and our system will extract relevant information.</p>
+    
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Scrape Company Details</button>
+        <button type="submit" class="btn-primary">Scrape Data</button>
     </form>
-    
-    {% if message %}
-        <div class="alert alert-info">{{ message }}</div>
-    {% endif %}
-    
-    {% if error %}
-        <div class="alert alert-danger">{{ error }}</div>
-    {% endif %}
+
+    <div id="loading-spinner" style="display: none;">
+        <p>Scraping in progress...</p>
+        <div class="spinner"></div>
+    </div>
 </div>
+
+<!-- JavaScript -->
+<script>
+    const matrixContainer = document.querySelector(".matrix-background");
+    const fields = [
+        "Company Name", "Email ID", "Mobile Number", "General Contact", "HQ Address", "Locations", 
+        "Key Capabilities", "Products", "Industry Types", "Partner Category", "Years in Business"
+    ];
+
+    function createFallingText() {
+        const textElement = document.createElement("div");
+        textElement.classList.add("matrix-text");
+        textElement.textContent = fields[Math.floor(Math.random() * fields.length)];
+        textElement.style.left = Math.random() * 100 + "vw";
+        textElement.style.animationDuration = Math.random() * 3 + 3 + "s";
+        matrixContainer.appendChild(textElement);
+        setTimeout(() => { textElement.remove(); }, 5000);
+    }
+
+    setInterval(createFallingText, 300);
+
+    document.querySelector("form").addEventListener("submit", function() {
+        document.getElementById("loading-spinner").style.display = "block";
+    });
+</script>
+
 {% endblock %}
