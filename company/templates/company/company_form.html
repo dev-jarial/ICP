@@ -253,6 +253,152 @@
     </div>
 </div>
 
+{% if scraped_data %}
+<div class="output-container">
+    <h3>Scraped Company Data</h3>
+    <table class="data-table">
+        <tbody>
+            <tr>
+                <th>Company Name</th>
+                <td>{{ scraped_data.company_name }}</td>
+            </tr>
+            <tr>
+                <th>Email ID</th>
+                <td>{{ scraped_data.email_id }}</td>
+            </tr>
+            <tr>
+                <th>Mobile Number</th>
+                <td>{{ scraped_data.mobile_number }}</td>
+            </tr>
+            <tr>
+                <th>General Contact</th>
+                <td>{{ scraped_data.general_contact_number }}</td>
+            </tr>
+            <tr>
+                <th>HQ Address</th>
+                <td>{{ scraped_data.hq_address }}</td>
+            </tr>
+            <tr>
+                <th>Years in Business</th>
+                <td>{{ scraped_data.number_of_years }}</td>
+            </tr>
+            <tr>
+                <th>Number of Employees</th>
+                <td>{{ scraped_data.number_of_employees }}</td>
+            </tr>
+            <tr>
+                <th>Number of Customers</th>
+                <td>{{ scraped_data.number_of_customers }}</td>
+            </tr>
+            <tr>
+                <th>Annual Revenue</th>
+                <td>${{ scraped_data.annual_revenue }}</td>
+            </tr>
+            <tr>
+                <th>Average Deal Size</th>
+                <td>${{ scraped_data.average_deal_size }}</td>
+            </tr>
+            <tr>
+                <th>Funding Status</th>
+                <td>{{ scraped_data.funding_status }}</td>
+            </tr>
+            <tr>
+                <th>Google Rating</th>
+                <td>{{ scraped_data.google_rating }}</td>
+            </tr>
+            <tr>
+                <th>Brief Company Profile</th>
+                <td>{{ scraped_data.brief_company_profile }}</td>
+            </tr>
+            <tr>
+                <th>Product Brochure</th>
+                <td>
+                    <a href="{{ scraped_data.product_brochure }}" target="_blank">Download Brochure</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Display lists (like locations, capabilities, products, etc.) -->
+    <h4>Locations</h4>
+    <ul>
+        {% for location in scraped_data.locations_offices %}
+            <li>{{ location }}</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Key Capabilities</h4>
+    <ul>
+        {% for capability in scraped_data.key_capabilities %}
+            <li>{{ capability }}</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Products</h4>
+    <ul>
+        {% for product in scraped_data.products %}
+            <li>{{ product }}</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Industry Types</h4>
+    <ul>
+        {% for industry in scraped_data.industry_types %}
+            <li>{{ industry }}</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Partner Categories</h4>
+    <ul>
+        {% for partner in scraped_data.partner_category %}
+            <li>{{ partner }}</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Top Customers</h4>
+    <ul>
+        {% for customer in scraped_data.top_customer_names %}
+            <li>{{ customer }}</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Client Testimonials</h4>
+    <ul>
+        {% for testimonial in scraped_data.client_testimonials %}
+            <li>{{ testimonial }}</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Top Management</h4>
+    <ul>
+        {% for manager in scraped_data.top_management_details %}
+            <li>{{ manager }}</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Operating Countries</h4>
+    <ul>
+        {% for country in scraped_data.operating_countries %}
+            <li>{{ country }}</li>
+        {% endfor %}
+    </ul>
+
+    <h4>OEMs Working With</h4>
+    <ul>
+        {% for oem in scraped_data.oems_working_with %}
+            <li>{{ oem }}</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Case Studies</h4>
+    <ul>
+        {% for case_study in scraped_data.case_studies_available %}
+            <li>{{ case_study }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
 <!-- JavaScript -->
 <script>
     const matrixContainer = document.querySelector(".matrix-background");
