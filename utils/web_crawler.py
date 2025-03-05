@@ -1,18 +1,13 @@
 import asyncio
 import json
-import os
 from typing import List
 
 from crawl4ai import AsyncWebCrawler, BrowserConfig, CrawlerRunConfig
 from crawl4ai.content_filter_strategy import PruningContentFilter
 from crawl4ai.markdown_generation_strategy import DefaultMarkdownGenerator
-from dotenv import load_dotenv
 from openai import OpenAI
 from pydantic import BaseModel, Field
 
-load_dotenv()
-open_ai_key = os.getenv("OPENAI_API_KEY")
-os.environ["OPENAI_API_KEY"]
 client = OpenAI()
 # Step 1: Create a pruning filter
 prune_filter = PruningContentFilter(
@@ -29,7 +24,6 @@ md_generator = DefaultMarkdownGenerator(content_filter=prune_filter)
 
 config = CrawlerRunConfig(
     exclude_external_links=True,
-    content_filter=prune_filter,
     wait_for_images=False,
     image_description_min_word_threshold=False,
 )
@@ -117,7 +111,7 @@ class CompanyDetails(BaseModel):
     funding_status: str = Field(
         ..., description="What the funding status of the company"
     )
-    google_rating: str = Field(..., description="check google rating about the company")
+    google_rating: str = Field(..., description="Rating out of 5, like: 3, 4.5, 2.")
 
 
 class MeaningFullLinks(BaseModel):
@@ -140,7 +134,6 @@ async def home_scrape(url):
             for links in internal_links:
                 links.pop("title", None)
                 links.pop("base_domain", None)
-
     completion = await asyncio.to_thread(
         client.beta.chat.completions.parse,
         model="gpt-4o",
@@ -159,7 +152,7 @@ async def home_scrape(url):
             },
             {
                 "role": "user",
-                "content": f"Here is scrapped data of the companies web site: \n\n{result.markdown_v2.raw_markdown}",
+                "content": f"Here is scrapped data of the companies web site: \n\n{result.markdown.fit_markdown}",
             },
         ],
         response_format=CompanyDetails,
@@ -167,7 +160,7 @@ async def home_scrape(url):
     )
     scrapped_links = await asyncio.to_thread(
         client.beta.chat.completions.parse,
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {
                 "role": "system",
@@ -181,25 +174,31 @@ async def home_scrape(url):
                 email_id
                 mobile_number
                 general_contact_number
-                address
+                hq_address
                 locations_offices
-                categories
+                key_capabilities
                 products
                 industry_types
+                partner_category
                 number_of_years
                 number_of_customers
                 number_of_employees
-                customer_names
-                case_studies
+                top_customer_names
+                case_studies_available
                 product_brochure
                 client_testimonials
-                OEMs
-                company_profile
-                management_details""",
+                oems_working_with
+                brief_company_profile
+                top_management_details
+                annual_revenue
+                average_deal_size
+                operating_countries
+                funding_status
+                google_rating""",
             },
         ],
         response_format=MeaningFullLinks,
-        temperature=0.9,
+        temperature=0.7,
     )
 
     content = completion.choices[0].message.parsed.model_dump()
@@ -215,7 +214,7 @@ async def home_scrape(url):
 async def mini_links_scrape(links):
     async with AsyncWebCrawler(config=browser_config) as crawler:
         web_urls = links.get("web_urls")
-        doc_urls = links.get("doc_urls")
+        # doc_urls = links.get("doc_urls")
 
         for link in web_urls:
             result = await crawler.arun(url=link, config=config)
@@ -237,11 +236,11 @@ async def mini_links_scrape(links):
                     },
                     {
                         "role": "user",
-                        "content": f"Here is scrapped data of the companies web site: \n\n{result.markdown_v2}",
+                        "content": f"Here is scrapped data of the companies web site: \n\n{result.markdown.fit_markdown}",
                     },
                 ],
                 response_format=CompanyDetails,
-                temperature=0.9,
+                temperature=0.6,
             )
             content = completion.choices[0].message.parsed.model_dump()
             main_messages.append({"role": "user", "content": f"{content}"})
@@ -283,8 +282,6 @@ async def main(url: str):
         )
         event = completion.choices[0].message.parsed.model_dump()
         company_details_json = json.dumps(event, indent=4)
-        print(company_details_json)
-        print("\n\n", json.dumps(main_messages), "\n\n")
         return company_details_json
 
 
