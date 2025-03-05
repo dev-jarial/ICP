@@ -13,7 +13,7 @@ def company_form_view(request):
             existing_company = CompanyDetails.objects.filter(website_link=website_link).first()
             if existing_company:
                 # Update existing record or return message
-                return render(request, 'companies/company_form.html', {
+                return render(request, 'company/company_form.html', {
                     'form': form, 
                     'message': 'Company already exists in database.'
                 })
@@ -41,4 +41,4 @@ def company_form_view(request):
             #     })
     
     form = CompanyDetailsForm()
-    return render(request, 'companies/company_form.html', {'form': form})
+    return render(request, 'company/company_form.html', {'form': form})
