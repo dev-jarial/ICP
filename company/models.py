@@ -51,5 +51,10 @@ class Company(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
+    website_link = models.URLField()
+
+    class Meta:
+        db_table = "company"
+
     def __str__(self):
         return self.name
