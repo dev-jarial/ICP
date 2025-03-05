@@ -28,7 +28,7 @@ config = CrawlerRunConfig(
     image_description_min_word_threshold=False,
 )
 
-browser_config = BrowserConfig(headless=False)
+browser_config = BrowserConfig(headless=True)
 
 main_messages = [
     {
