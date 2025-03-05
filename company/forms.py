@@ -1,14 +1,18 @@
 from django import forms
-from .models import CompanyDetails
 
-class CompanyDetailsForm(forms.ModelForm):
+from .models import Company
+
+
+class CompanyForm(forms.ModelForm):
     website_link = forms.URLField(
-        widget=forms.TextInput(attrs={
-            'placeholder': 'Enter company website URL',
-            'class': 'form-control'
-        })
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Enter company website URL: https://",
+                "class": "form-control",
+            }
+        )
     )
 
     class Meta:
-        model = CompanyDetails
-        fields = ['website_link']
+        model = Company
+        fields = ["website_link"]
