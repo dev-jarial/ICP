@@ -14,11 +14,9 @@ class Company(models.Model):
     industry_types = models.JSONField(default=list)  # Store multiple industries
     partner_category = models.JSONField(default=list)
 
-    number_of_years = models.PositiveIntegerField(
-        blank=True, null=True
-    )  # Years in business
-    number_of_customers = models.PositiveIntegerField(blank=True, null=True)
-    number_of_employees = models.PositiveIntegerField(blank=True, null=True)
+    number_of_years = models.CharField(blank=True, null=True)  # Years in business
+    number_of_customers = models.CharField(blank=True, null=True)
+    number_of_employees = models.CharField(blank=True, null=True)
 
     top_customer_names = models.JSONField(default=list)  # Store list of top customers
     case_studies_available = models.JSONField(default=list)
@@ -31,12 +29,8 @@ class Company(models.Model):
     brief_company_profile = models.TextField(blank=True, null=True)
 
     top_management_details = models.JSONField(default=list)  # Store management details
-    annual_revenue = models.DecimalField(
-        max_digits=15, decimal_places=2, blank=True, null=True
-    )  # Revenue in USD
-    average_deal_size = models.DecimalField(
-        max_digits=15, decimal_places=2, blank=True, null=True
-    )
+    annual_revenue = models.CharField(blank=True, null=True)  # Revenue in USD
+    average_deal_size = models.CharField(blank=True, null=True)
 
     operating_countries = models.JSONField(default=list)  # List of countries
 
@@ -44,12 +38,7 @@ class Company(models.Model):
     #     default=list
     # )  # Store competitor websites
     funding_status = models.CharField(max_length=255, blank=True, null=True)
-    google_rating = models.DecimalField(
-        max_digits=3, decimal_places=2, blank=True, null=True
-    )  # Google rating (e.g., 4.5)
-
-    date_added = models.DateTimeField(auto_now_add=True)
-    last_updated = models.DateTimeField(auto_now=True)
+    google_rating = models.CharField(blank=True, null=True)  # Google rating (e.g., 4.5)
 
     website_link = models.URLField()
 
