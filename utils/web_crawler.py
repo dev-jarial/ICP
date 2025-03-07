@@ -50,7 +50,7 @@ class CompanyDetails(BaseModel):
         ...,
         description="general contact number of the company, usually telephone number.",
     )
-    hq_address: str = Field(
+    hq_address: list[str] = Field(
         ..., description="where company's headquarters are located."
     )
     locations_offices: list[str] = Field(
@@ -111,7 +111,7 @@ class CompanyDetails(BaseModel):
     funding_status: str = Field(
         ..., description="What the funding status of the company"
     )
-    google_rating: str = Field(..., description="Rating out of 5, like: 3, 4.5, 2.")
+    google_rating: str = Field(..., description="Rating out of 5, like: 3, 4.5, 2.1")
 
 
 class MeaningFullLinks(BaseModel):
