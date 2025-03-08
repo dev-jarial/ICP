@@ -1,0 +1,21 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+    <div class="module">
+        <h2>Upload Company Data (CSV/Excel)</h2>
+        
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="button">Upload</button>
+        </form>
+    </div>
+{% endblock %}
