@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Company
+from .models import Company, CompanyUpload
 
 
 class CompanyForm(forms.ModelForm):
@@ -16,3 +16,9 @@ class CompanyForm(forms.ModelForm):
     class Meta:
         model = Company
         fields = ["website_link"]
+
+
+class CompanyUploadForm(forms.ModelForm):
+    class Meta:
+        model = CompanyUpload
+        fields = ["file"]
