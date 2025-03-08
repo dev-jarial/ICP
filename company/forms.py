@@ -1,3 +1,5 @@
+import os
+
 from django import forms
 
 from .models import Company, CompanyUpload
@@ -22,3 +24,16 @@ class CompanyUploadForm(forms.ModelForm):
     class Meta:
         model = CompanyUpload
         fields = ["file"]
+
+    def clean_file(self):
+        uploaded_file = self.cleaned_data.get("file")
+        if uploaded_file:
+            ext = os.path.splitext(uploaded_file.name)[1].lower()
+            allowed_extensions = [".csv", ".xlsx"]
+
+            if ext not in allowed_extensions:
+                raise forms.ValidationError(
+                    "Only CSV or Excel (.xlsx) files are allowed."
+                )
+
+        return uploaded_file
