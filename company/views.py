@@ -24,43 +24,6 @@ def company_form_view(request):
             if not validators.url(website_link):
                 error = "Invalid website URL. Please enter a valid link."
             else:
-                # Try to retrieve the existing company data
-                # existing_company = Company.objects.filter(
-                #     website_link=website_link
-                # ).first()
-
-                # if existing_company:
-                #     # Convert the company object into a dictionary for rendering
-                #     scraped_data = {
-                #         "name": existing_company.name,
-                #         "email": existing_company.email,
-                #         "mobile_number": existing_company.mobile_number,
-                #         "general_contact_number": existing_company.general_contact_number,
-                #         "hq_address": existing_company.hq_address,
-                #         "locations": existing_company.locations,
-                #         "key_capabilities": existing_company.key_capabilities,
-                #         "products": existing_company.products,
-                #         "industry_types": existing_company.industry_types,
-                #         "partner_category": existing_company.partner_category,
-                #         "number_of_years": existing_company.number_of_years,
-                #         "number_of_customers": existing_company.number_of_customers,
-                #         "number_of_employees": existing_company.number_of_employees,
-                #         "top_customer_names": existing_company.top_customer_names,
-                #         "case_studies_available": existing_company.case_studies_available,
-                #         "product_brochure": existing_company.product_brochure_link,
-                #         "client_testimonials": existing_company.client_testimonials,
-                #         "oems_working_with": existing_company.oems_working_with,
-                #         "brief_company_profile": existing_company.brief_company_profile,
-                #         "top_management_details": existing_company.top_management_details,
-                #         "annual_revenue": existing_company.annual_revenue,
-                #         "average_deal_size": existing_company.average_deal_size,
-                #         "operating_countries": existing_company.operating_countries,
-                #         "funding_status": existing_company.funding_status,
-                #         "google_rating": existing_company.google_rating,
-                #     }
-                #     message = "Company data retrieved from database."
-
-                # else:
                 try:
                     # Run the scraper function
                     scraped_data = asyncio.run(main(url=website_link))
