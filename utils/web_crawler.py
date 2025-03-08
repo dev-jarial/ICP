@@ -156,7 +156,7 @@ async def home_scrape(url):
                 links.pop("base_domain", None)
     completion = await asyncio.to_thread(
         client.beta.chat.completions.parse,
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {
                 "role": "system",
@@ -258,7 +258,7 @@ async def mini_links_scrape(links):
             result = await crawler.arun(url=link, config=config)
             completion = await asyncio.to_thread(
                 client.beta.chat.completions.parse,
-                model="gpt-4o",
+                model="gpt-4o-mini",
                 messages=[
                     {
                         "role": "system",
@@ -316,7 +316,6 @@ async def main(url: str):
             model="gpt-4o",
             messages=main_messages,
             response_format=CompanyDetails,
-            temperature=0.5,
         )
         event = completion.choices[0].message.parsed.model_dump()
         company_details_json = json.dumps(event, indent=4)
