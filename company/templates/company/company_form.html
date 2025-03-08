@@ -9,27 +9,35 @@
         font-family: 'Poppins', sans-serif;
     }
 
+    html,
+    body {
+        height: auto;
+        min-height: 100vh;
+        overflow-y: auto;
+        /* Ensures scrolling is allowed */
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+    }
+
     body {
         background: linear-gradient(to right, #1e3c72, #2a5298);
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 100vh;
         flex-direction: column;
         padding: 20px;
         position: relative;
-        overflow: hidden;
     }
 
     /* Matrix Background Effect */
     .matrix-background {
-        position: absolute;
+        position: fixed;
         top: 0;
         left: 0;
         width: 100%;
-        height: 100%;
+        height: 100vh;
         overflow: hidden;
-        z-index: 0;
+        z-index: -1;
     }
 
     .matrix-text {
@@ -47,9 +55,11 @@
             transform: translateY(-100vh);
             opacity: 0;
         }
+
         10% {
             opacity: 1;
         }
+
         100% {
             transform: translateY(100vh);
             opacity: 0;
@@ -70,6 +80,8 @@
         border: 1px solid rgba(255, 255, 255, 0.2);
         animation: fadeIn 1s ease-in-out;
         z-index: 2;
+        margin-bottom: 20px;
+        /* Ensures spacing at the bottom */
     }
 
     h2 {
@@ -91,7 +103,8 @@
         gap: 15px;
     }
 
-    input[type="text"], textarea {
+    input[type="text"],
+    textarea {
         width: 100%;
         padding: 12px;
         border: 1px solid rgba(255, 255, 255, 0.3);
@@ -142,8 +155,13 @@
     }
 
     @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
     }
 
     /* Scraped Data Output */
@@ -165,7 +183,8 @@
         border-collapse: collapse;
     }
 
-    .data-table th, .data-table td {
+    .data-table th,
+    .data-table td {
         border: 1px solid rgba(255, 255, 255, 0.3);
         padding: 8px;
         text-align: left;
@@ -230,7 +249,6 @@
             font-size: 20px;
         }
     }
-
 </style>
 
 <!-- Matrix Background Effect -->
@@ -240,7 +258,7 @@
 <div class="container">
     <h2>Company Data Scraper</h2>
     <p>Enter the company's website URL below, and our system will extract relevant information.</p>
-    
+
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
@@ -276,7 +294,13 @@
             </tr>
             <tr>
                 <th>HQ Address</th>
-                <td>{{ scraped_data.hq_address }}</td>
+                <td>
+                    <ul>
+                        {% for hq_address in scraped_data.hq_address %}
+                        <li>{{ hq_address }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
             </tr>
             <tr>
                 <th>Years in Business</th>
@@ -303,12 +327,12 @@
                 <td>{{ scraped_data.funding_status }}</td>
             </tr>
             <tr>
-                <th>Google Rating</th>
-                <td>{{ scraped_data.google_rating }}</td>
-            </tr>
-            <tr>
                 <th>Brief Company Profile</th>
                 <td>{{ scraped_data.brief_company_profile }}</td>
+            </tr>
+            <tr>
+                <th>Google Rating</th>
+                <td>{{ scraped_data.google_rating }}</td>
             </tr>
             <tr>
                 <th>Product Brochure</th>
@@ -316,86 +340,122 @@
                     <a href="{{ scraped_data.product_brochure }}" target="_blank">Download Brochure</a>
                 </td>
             </tr>
+            <tr>
+                <th>Locations</th>
+                <td>
+                    <ul>
+                        {% for location in scraped_data.locations_offices %}
+                        <li>{{ location }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Key Capabilities</th>
+                <td>
+                    <ul>
+                        {% for capability in scraped_data.key_capabilities %}
+                        <li>{{ capability }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Products</th>
+                <td>
+                    <ul>
+                        {% for product in scraped_data.products %}
+                        <li>{{ product }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Industry Types</th>
+                <td>
+                    <ul>
+                        {% for industry in scraped_data.industry_types %}
+                        <li>{{ industry }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Partner Categories</th>
+                <td>
+                    <ul>
+                        {% for partner in scraped_data.partner_category %}
+                        <li>{{ partner }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Top Customers</th>
+                <td>
+                    <ul>
+                        {% for customer in scraped_data.top_customer_names %}
+                        <li>{{ customer }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Client Testimonials</th>
+                <td>
+                    <ul>
+                        {% for testimonial in scraped_data.client_testimonials %}
+                        <li>{{ testimonial }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Top Management</th>
+                <td>
+                    <ul>
+                        {% for manager in scraped_data.top_management_details %}
+                        <li>{{ manager }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Operating Countries</th>
+                <td>
+                    <ul>
+                        {% for country in scraped_data.operating_countries %}
+                        <li>{{ country }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>OEMs Working With</th>
+                <td>
+                    <ul>
+                        {% for oem in scraped_data.oems_working_with %}
+                        <li>{{ oem }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Case Studies</th>
+                <td>
+                    <ul>
+                        {% for case_study in scraped_data.case_studies_available %}
+                        <li>{{ case_study }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+
+
         </tbody>
     </table>
 
     <!-- Display lists (like locations, capabilities, products, etc.) -->
-    <h4>Locations</h4>
-    <ul>
-        {% for location in scraped_data.locations_offices %}
-            <li>{{ location }}</li>
-        {% endfor %}
-    </ul>
-
-    <h4>Key Capabilities</h4>
-    <ul>
-        {% for capability in scraped_data.key_capabilities %}
-            <li>{{ capability }}</li>
-        {% endfor %}
-    </ul>
-
-    <h4>Products</h4>
-    <ul>
-        {% for product in scraped_data.products %}
-            <li>{{ product }}</li>
-        {% endfor %}
-    </ul>
-
-    <h4>Industry Types</h4>
-    <ul>
-        {% for industry in scraped_data.industry_types %}
-            <li>{{ industry }}</li>
-        {% endfor %}
-    </ul>
-
-    <h4>Partner Categories</h4>
-    <ul>
-        {% for partner in scraped_data.partner_category %}
-            <li>{{ partner }}</li>
-        {% endfor %}
-    </ul>
-
-    <h4>Top Customers</h4>
-    <ul>
-        {% for customer in scraped_data.top_customer_names %}
-            <li>{{ customer }}</li>
-        {% endfor %}
-    </ul>
-
-    <h4>Client Testimonials</h4>
-    <ul>
-        {% for testimonial in scraped_data.client_testimonials %}
-            <li>{{ testimonial }}</li>
-        {% endfor %}
-    </ul>
-
-    <h4>Top Management</h4>
-    <ul>
-        {% for manager in scraped_data.top_management_details %}
-            <li>{{ manager }}</li>
-        {% endfor %}
-    </ul>
-
-    <h4>Operating Countries</h4>
-    <ul>
-        {% for country in scraped_data.operating_countries %}
-            <li>{{ country }}</li>
-        {% endfor %}
-    </ul>
-
-    <h4>OEMs Working With</h4>
-    <ul>
-        {% for oem in scraped_data.oems_working_with %}
-            <li>{{ oem }}</li>
-        {% endfor %}
-    </ul>
-
-    <h4>Case Studies</h4>
-    <ul>
-        {% for case_study in scraped_data.case_studies_available %}
-            <li>{{ case_study }}</li>
-        {% endfor %}
-    </ul>
 </div>
 {% endif %}
 
@@ -403,7 +463,7 @@
 <script>
     const matrixContainer = document.querySelector(".matrix-background");
     const fields = [
-        "Company Name", "Email ID", "Mobile Number", "General Contact", "HQ Address", "Locations", 
+        "Company Name", "Email ID", "Mobile Number", "General Contact", "HQ Address", "Locations",
         "Key Capabilities", "Products", "Industry Types", "Partner Category", "Years in Business"
     ];
 
@@ -413,13 +473,18 @@
         textElement.textContent = fields[Math.floor(Math.random() * fields.length)];
         textElement.style.left = Math.random() * 100 + "vw";
         textElement.style.animationDuration = Math.random() * 3 + 3 + "s";
+
+        // Adjust text position relative to scroll height
+        const scrollHeight = document.body.scrollHeight;
+        textElement.style.top = Math.random() * scrollHeight + "px";
+
         matrixContainer.appendChild(textElement);
         setTimeout(() => { textElement.remove(); }, 5000);
     }
 
     setInterval(createFallingText, 300);
 
-    document.querySelector("form").addEventListener("submit", function() {
+    document.querySelector("form").addEventListener("submit", function () {
         document.getElementById("loading-spinner").style.display = "block";
     });
 </script>
