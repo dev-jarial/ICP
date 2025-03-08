@@ -3,10 +3,12 @@ import csv
 import openpyxl
 from django.contrib import admin
 from django.http import HttpResponse
-from django.urls import path
+from django.shortcuts import redirect
+from django.urls import path, reverse
 from django.utils.html import format_html
 
-from .models import Company
+from .models import Company, CompanyUpload
+from .views import upload_company_file
 
 
 @admin.action(description="Export selected companies as CSV")
@@ -74,6 +76,11 @@ class CompanyAdmin(admin.ModelAdmin):
         custom_urls = [
             path("export/csv/", self.export_all_as_csv, name="export_csv"),
             path("export/excel/", self.export_all_as_excel, name="export_excel"),
+            path(
+                "upload/",
+                self.admin_site.admin_view(upload_company_file),
+                name="upload_company_file",
+            ),
         ]
         return custom_urls + urls
 
@@ -131,8 +138,18 @@ class CompanyAdmin(admin.ModelAdmin):
             f'<a href="{csv_url}">📥 Download CSV</a> | <a href="{excel_url}">📥 Download Excel</a>'
         )
 
+    def upload_view(self, request):
+        return redirect(reverse("upload_company_file"))
+
+    def upload_files_link(self, obj):
+        """Adds an upload button in the admin panel"""
+        url = reverse("upload_company_file")
+        return format_html(f'<a href="{url}" class="button">📤 Upload CSV/Excel</a>')
+
+    upload_files_link.short_description = "Upload Files"
     download_links.allow_tags = True
     download_links.short_description = "Download Table"
 
 
 admin.site.register(Company, CompanyAdmin)
+admin.site.register(CompanyUpload)
