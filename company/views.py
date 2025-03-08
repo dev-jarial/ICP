@@ -32,8 +32,6 @@ def company_form_view(request):
                     if isinstance(scraped_data, str):
                         scraped_data = json.loads(scraped_data)
 
-                    print("Scraped Data:", scraped_data)  # Debugging output
-
                     # Save scraped data to the database
                     company, created = Company.objects.update_or_create(
                         website_link=website_link,
@@ -95,8 +93,6 @@ def company_form_view(request):
                             "google_rating": scraped_data.get("google_rating", None),
                         },
                     )
-
-                    message = "New company data saved successfully!"
 
                 except Exception as e:
                     error = f"Failed to scrape data: {str(e)}"
