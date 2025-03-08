@@ -2,11 +2,13 @@ import asyncio
 import json
 
 import validators
-from django.shortcuts import render
+from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
+from django.shortcuts import redirect, render
 
 from utils.web_crawler import main
 
-from .forms import CompanyForm
+from .forms import CompanyForm, CompanyUploadForm
 from .models import Company
 
 
@@ -118,3 +120,19 @@ def company_form_view(request):
             "error": error,
         },
     )
+
+
+@staff_member_required  # Ensures only admins can access
+def upload_company_file(request):
+    if request.method == "POST":
+        form = CompanyUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "File uploaded successfully.")
+            return redirect("company:upload_company_file")  # Redirect to the same page
+        else:
+            messages.error(request, "Invalid file. Please upload a CSV or Excel file.")
+    else:
+        form = CompanyUploadForm()
+
+    return render(request, "admin/upload_company_file.html", {"form": form})
