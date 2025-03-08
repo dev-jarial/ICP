@@ -75,7 +75,7 @@ def company_form_view(request):
                     company, created = Company.objects.update_or_create(
                         website_link=website_link,
                         defaults={
-                            "name": scraped_data.get("company_name", ""),
+                            "name": scraped_data.get("name", ""),
                             "email": scraped_data.get("email_id", None),
                             "mobile_number": scraped_data.get("mobile_number", None),
                             "general_contact_number": scraped_data.get(
