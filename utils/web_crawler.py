@@ -41,77 +41,89 @@ main_messages = [
 
 
 class CompanyDetails(BaseModel):
-    company_name: str = Field(..., description="the name of the company.")
-    email_id: str = Field(
-        ..., description="officla or sales or hr emmail of the company."
+    company_name: str = Field(
+        ..., description="The official registered name of the company."
     )
-    mobile_number: str = Field(..., description="mobile number of the company.")
-    general_contact_number: str = Field(
+    email_id: str = Field(
         ...,
-        description="general contact number of the company, usually telephone number.",
+        description="The company's official email address (sales, HR, or general contact).",
+    )
+    mobile_number: str = Field(
+        ..., description="The company's primary mobile contact number."
+    )
+    general_contact_number: str = Field(
+        ..., description="The company's general contact number, usually a landline."
     )
     hq_address: list[str] = Field(
-        ..., description="where company's headquarters are located."
+        ..., description="The location(s) of the company's headquarters."
     )
     locations_offices: list[str] = Field(
-        ..., description="where are the other locations of company's offices."
+        ..., description="The locations of the company's branch or regional offices."
     )
     key_capabilities: list[str] = Field(
-        ...,
-        description="key capabilities, in which areas or sectors company actually works",
+        ..., description="The company's core competencies or areas of expertise."
     )
-    products: list[str] = Field(..., description="products that company offer or build")
+    products: list[str] = Field(
+        ..., description="Products the company develops or offers."
+    )
     industry_types: list[str] = Field(
         ...,
-        description="""industries where company actually works, like healthcare, education, Computer and Networking, 
-        Software and Development, defence, agriculture etc""",
+        description="Industries in which the company operates (e.g., Healthcare, IT, Defense).",
     )
-
     partner_category: list[str] = Field(
-        ...,
-        description="List of the categories, where company's partner actually work.",
+        ..., description="Categories describing the company's business partnerships."
     )
-
-    number_of_years: str = Field(..., description="how old is company")
-    number_of_customers: str = Field(..., description="how many customers company have")
+    number_of_years: str = Field(
+        ..., description="The number of years since the company was founded."
+    )
+    number_of_customers: str = Field(
+        ..., description="The total number of customers served by the company."
+    )
     number_of_employees: str = Field(
-        ..., description="how many employees work in the company"
+        ..., description="The total number of employees working in the company."
     )
     top_customer_names: list[str] = Field(
-        ...,
-        description="list of top customers names",
+        ..., description="A list of notable or major customers of the company."
     )
     case_studies_available: list[str] = Field(
         ...,
-        description="case studies that showcase the company's work by solving the real life issues",
+        description="Case studies showcasing real-world applications of the company's solutions.",
     )
     product_brochure: str = Field(
-        ..., description="url link about the company's brochure"
+        ..., description="A URL link to the company's product brochure or catalog."
     )
     client_testimonials: list[str] = Field(
         ...,
-        description="statements from customers that praise a business, product, or service offered by the company",
+        description="Statements from clients endorsing the company's products or services.",
     )
     oems_working_with: list[str] = Field(
         ...,
-        description="Services or products of the company for other companies to sell under their own brand",
+        description="OEMs (Original Equipment Manufacturers) that the company collaborates with.",
     )
-    brief_company_profile: str = Field(..., description="description of the company")
+    brief_company_profile: str = Field(
+        ...,
+        description="A concise overview of the company's history, vision, and operations.",
+    )
     top_management_details: list[str] = Field(
         ...,
-        description="details about the top roles, responsibilities, hierarchy within the organization",
+        description="Information about top executives, their roles, and company hierarchy.",
     )
-    annual_revenue: float = Field(..., description="Annual revenue of the company")
+    annual_revenue: float = Field(
+        ..., description="The company's annual revenue in USD."
+    )
     average_deal_size: float = Field(
-        ..., description="Average cost deal size company make."
+        ..., description="The typical value of a business deal closed by the company."
     )
     operating_countries: list[str] = Field(
-        ..., description="Company operating in which countries"
+        ...,
+        description="The countries where the company has operations or business presence.",
     )
     funding_status: str = Field(
-        ..., description="What the funding status of the company"
+        ..., description="The current funding stage or financial status of the company."
     )
-    google_rating: str = Field(..., description="Rating out of 5, like: 3, 4.5, 2.1")
+    google_rating: float = Field(
+        ..., description="The company's rating on Google (out of 5)."
+    )
 
 
 class MeaningFullLinks(BaseModel):
