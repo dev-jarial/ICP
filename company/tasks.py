@@ -13,25 +13,20 @@ from .models import Company
 def process_uploaded_file(valid_urls):
     for website_link in valid_urls:
         try:
-            print(f"Processing: {website_link}")
-
             # Ensure Celery correctly manages the database connection
             connections.close_all()
 
             # Run the web scraper
             scraped_data = asyncio.run(main(url=website_link))
-            print(f"Scraped data: {scraped_data}")
 
             # Ensure scraped_data is a dictionary
             if isinstance(scraped_data, str):
                 try:
                     scraped_data = json.loads(scraped_data)
                 except json.JSONDecodeError:
-                    print(f"Invalid JSON returned for {website_link}: {scraped_data}")
                     continue  # Skip invalid responses
 
             if not isinstance(scraped_data, dict):
-                print(f"Unexpected return type from scraper: {type(scraped_data)}")
                 continue
 
             # Ensure atomic database transaction
