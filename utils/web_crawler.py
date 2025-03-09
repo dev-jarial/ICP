@@ -283,28 +283,6 @@ async def mini_links_scrape(links):
             content = completion.choices[0].message.parsed.model_dump()
             main_messages.append({"role": "user", "content": f"{content}"})
 
-        # for link in doc_urls:
-        #     result = await crawler.arun(url=link, config=config)
-        #     completion = await asyncio.to_thread(
-        #         client.chat.completions.create,
-        #         model="gpt-4o-mini",
-        #         messages=[
-        #             {
-        #                 "role": "system",
-        #                 "content": """On the basis given content, you have to extract the only
-        #                 meaningful information about the company. The content provided you is the scrapped content
-        #                 from the company's site and in markdown format""",
-        #             },
-        #             {
-        #                 "role": "user",
-        #                 "content": f"Here is scrapped data of the companies web site: \n\n{result.markdown_v2.raw_markdown}",
-        #             },
-        #         ],
-        #         max_tokens=500,
-        #     )
-        #     content = completion.choices[0].message.content
-        #     main_messages.append({"role": "user", "content": f"{content}"})
-
         return True
 
 
