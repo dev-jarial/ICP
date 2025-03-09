@@ -1,6 +1,7 @@
 import asyncio
 import json
 
+import pandas as pd
 import validators
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -10,6 +11,7 @@ from utils.web_crawler import main
 
 from .forms import CompanyForm, CompanyUploadForm
 from .models import Company
+from .tasks import process_uploaded_file
 
 
 def company_form_view(request):
@@ -109,16 +111,63 @@ def company_form_view(request):
     )
 
 
-@staff_member_required  # Ensures only admins can access
+@staff_member_required
 def upload_company_file(request):
     if request.method == "POST":
         form = CompanyUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            messages.success(request, "File uploaded successfully.")
-            return redirect("company:upload_company_file")  # Redirect to the same page
+            upload_instance = form.save()
+            file_path = upload_instance.file.path
+
+            try:
+                # Read CSV or Excel file
+                df = (
+                    pd.read_csv(file_path, header=None)
+                    if file_path.endswith(".csv")
+                    else pd.read_excel(file_path, header=None)
+                )
+                df = df.dropna().reset_index(drop=True)
+
+                # Ensure valid structure
+                if df.empty or df.shape[1] != 1:
+                    messages.error(
+                        request, "The file should contain exactly one column with URLs."
+                    )
+                    return redirect("company:upload_company_file")
+
+                # Extract and validate URLs
+                valid_urls = [
+                    str(row.iloc[0]).strip()
+                    for _, row in df.iterrows()
+                    if validators.url(str(row.iloc[0]).strip())
+                ]
+
+                if not valid_urls:
+                    messages.warning(
+                        request, "No valid website URLs found in the file."
+                    )
+                    return redirect("company:upload_company_file")
+
+                # Run the processing in the background using Celery
+                process_uploaded_file.delay(valid_urls)
+
+                # Send response immediately with the count of valid URLs
+                messages.success(
+                    request,
+                    f"Total {len(valid_urls)} valid URLs found. Processing in background.",
+                )
+
+                return redirect("company:upload_company_file")
+
+            except Exception as e:
+                messages.error(request, f"Error processing file: {e}")
+                return redirect("company:upload_company_file")
+
         else:
-            messages.error(request, "Invalid file. Please upload a CSV or Excel file.")
+            messages.error(
+                request, "Invalid file format. Please upload a CSV or Excel file."
+            )
+
     else:
         form = CompanyUploadForm()
 
