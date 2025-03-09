@@ -164,7 +164,7 @@ async def home_scrape(url):
                 Focus on the following aspects:
 
                 1. **Basic Company Information**:
-                - Company name
+                - Name
                 - Email address (official, sales, HR, etc.)
                 - Contact numbers (mobile, general, or support lines)
                 - Physical address (headquarters and additional office locations)
