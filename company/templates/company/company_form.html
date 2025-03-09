@@ -20,7 +20,7 @@
     }
 
     body {
-        background: linear-gradient(to right, #1e3c72, #2a5298);
+        background: grey;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -256,13 +256,12 @@
 
 <!-- Main Scraper Form -->
 <div class="container">
-    <h2>Company Data Scraper</h2>
-    <p>Enter the company's website URL below, and our system will extract relevant information.</p>
+    <h2>AI Agent for Ideal Partner Profile Creation</h2>
 
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn-primary">Scrape Data</button>
+        <button type="submit" class="btn-primary">Generate Profile</button>
     </form>
 
     <div id="loading-spinner" style="display: none;">
@@ -482,7 +481,7 @@
         setTimeout(() => { textElement.remove(); }, 5000);
     }
 
-    setInterval(createFallingText, 300);
+    // setInterval(createFallingText, 300);
 
     document.querySelector("form").addEventListener("submit", function () {
         document.getElementById("loading-spinner").style.display = "block";
