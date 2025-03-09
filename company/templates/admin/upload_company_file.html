@@ -1,21 +1,286 @@
 {% extends "admin/base_site.html" %}
 
 {% block content %}
-    <div class="module">
-        <h2>Upload Company Data (CSV/Excel)</h2>
-        
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li class="{{ message.tags }}">{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+<style>
+    /* Global Styling */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
 
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="button">Upload</button>
-        </form>
-    </div>
+    html,
+    body {
+        min-height: 100vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background: linear-gradient(to right, #1e3c72, #2a5298);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 20px;
+        position: relative;
+    }
+
+    /* Matrix Background */
+    .matrix-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+        z-index: -1;
+    }
+
+    .matrix-text {
+        position: absolute;
+        font-size: 40px;
+        font-weight: 800;
+        color: white;
+        text-shadow: 0 0 8px rgba(176, 176, 176, 0.8);
+        white-space: nowrap;
+        animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+        0% {
+            transform: translateY(-100vh);
+            opacity: 0;
+        }
+
+        10% {
+            opacity: 1;
+        }
+
+        100% {
+            transform: translateY(100vh);
+            opacity: 0;
+        }
+    }
+
+    /* Upload Container */
+    .upload-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        /* Perfect centering */
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        max-width: 600px;
+        width: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        animation: fadeIn 1s ease-in-out;
+        z-index: 2;
+    }
+
+
+    h2 {
+        font-size: 26px;
+        color: #ffffff;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+
+    p {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 15px;
+        margin-bottom: 20px;
+    }
+
+    /* Form Styling */
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    input[type="file"] {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        font-size: 16px;
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    input[type="file"]::file-selector-button {
+        padding: 8px 12px;
+        border: none;
+        border-radius: 6px;
+        background: linear-gradient(135deg, #ff7eb3, #ff758c);
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+    }
+
+    input[type="file"]::file-selector-button:hover {
+        background: linear-gradient(135deg, #ff758c, #ff4f70);
+    }
+
+    .button {
+        padding: 20px 30px;
+        border: none;
+        border-radius: 10px;
+        font-size: 20px;
+        font-weight: bold;
+        color: white;
+        background: linear-gradient(135deg, #ff7eb3, #ff758c);
+        transition: all 0.3s ease-in-out;
+        cursor: pointer;
+        width: 100%;
+        height: 40px;
+        margin: 15px auto;
+        display: block;
+    }
+
+    .button:hover {
+        transform: scale(1.05);
+        background: linear-gradient(135deg, #ff758c, #ff4f70);
+    }
+
+    /* Message Styling */
+    .messages {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 15px;
+    }
+
+    .messages li {
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 5px;
+        color: white;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .messages .success {
+        background: rgba(76, 175, 80, 0.8);
+    }
+
+    .messages .error {
+        background: rgba(244, 67, 54, 0.8);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .upload-container {
+            max-width: 90%;
+            padding: 30px;
+        }
+
+        h2 {
+            font-size: 22px;
+        }
+
+        p {
+            font-size: 14px;
+        }
+
+        input[type="file"] {
+            font-size: 14px;
+        }
+
+        .button {
+            font-size: 14px;
+        }
+
+        .matrix-text {
+            font-size: 25px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .upload-container {
+            max-width: 95%;
+            padding: 25px;
+        }
+
+        h2 {
+            font-size: 20px;
+        }
+
+        p {
+            font-size: 13px;
+        }
+
+        input[type="file"] {
+            font-size: 13px;
+        }
+
+        .button {
+            font-size: 13px;
+        }
+
+        .matrix-text {
+            font-size: 20px;
+        }
+    }
+</style>
+
+<!-- Matrix Background -->
+<div class="matrix-background"></div>
+
+<!-- Upload Form -->
+<div class="upload-container">
+    <h2>Upload Company Data (CSV/Excel)</h2>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="button">Upload</button>
+    </form>
+</div>
+
+<!-- JavaScript for Matrix Effect -->
+<script>
+    const matrixContainer = document.querySelector(".matrix-background");
+    const fields = [
+        "Company Data", "Upload File", "CSV", "Excel", "Submit Form", "Success", "Processing",
+        "Information", "Upload Status", "Import Data", "Company Records"
+    ];
+
+    function createFallingText() {
+        const textElement = document.createElement("div");
+        textElement.classList.add("matrix-text");
+        textElement.textContent = fields[Math.floor(Math.random() * fields.length)];
+        textElement.style.left = Math.random() * 100 + "vw";
+        textElement.style.animationDuration = Math.random() * 3 + 3 + "s";
+
+        // Adjust text position relative to scroll height
+        const scrollHeight = document.body.scrollHeight;
+        textElement.style.top = Math.random() * scrollHeight + "px";
+
+        matrixContainer.appendChild(textElement);
+        setTimeout(() => { textElement.remove(); }, 5000);
+    }
+
+    // Generate falling text at intervals
+    setInterval(createFallingText, 300);
+</script>
+
 {% endblock %}
