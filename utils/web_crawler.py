@@ -292,6 +292,7 @@ async def mini_links_scrape(links):
 async def main(url: str):
     global scraped_data
     scraped_data = None  # Reset data before scraping
+    main_messages = []  # Clear stored messages
     related_links = await home_scrape(url=url)
     url_scraped_true = await mini_links_scrape(links=json.loads(related_links))
     if url_scraped_true:
