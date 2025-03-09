@@ -10,6 +10,10 @@ from django.utils.html import format_html
 from .models import Company, CompanyUpload
 from .views import upload_company_file
 
+admin.site.site_header = "Partner Profile"
+admin.site.site_title = "CoPartner Profile Admin Portal"
+admin.site.index_title = "Welcome to Partner Profile Dashboard"
+
 
 @admin.action(description="Export selected companies as CSV")
 def export_as_csv(modeladmin, request, queryset):
