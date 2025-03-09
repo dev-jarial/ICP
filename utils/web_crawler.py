@@ -216,7 +216,7 @@ async def home_scrape(url):
         
         Focus on selecting links that provide meaningful information about:
         
-        - **Basic Information**: Company name, email, contact numbers, HQ and office locations.
+        - **Basic Information**: Name, email, contact numbers, HQ and office locations.
         - **Business Overview**: Key capabilities, products, industry types, and partner categories.
         - **Company Scale & Experience**: Years in operation, number of customers, number of employees.
         - **Clients & Market Presence**: Top customers, case studies, client testimonials, OEM partnerships.
