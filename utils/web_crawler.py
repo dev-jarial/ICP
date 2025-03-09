@@ -16,13 +16,14 @@ prune_filter = PruningContentFilter(
     # "fixed" or "dynamic"
     threshold_type="fixed",
     # Ignore nodes with <5 words
-    min_word_threshold=5,
+    min_word_threshold=50,
 )
 
 # Step 2: Insert it into a Markdown Generator
 md_generator = DefaultMarkdownGenerator(content_filter=prune_filter)
 
 config = CrawlerRunConfig(
+    markdown_generator=md_generator,
     exclude_external_links=True,
     wait_for_images=False,
     image_description_min_word_threshold=False,
@@ -154,6 +155,7 @@ async def home_scrape(url):
             for links in internal_links:
                 links.pop("title", None)
                 links.pop("base_domain", None)
+
     completion = await asyncio.to_thread(
         client.beta.chat.completions.parse,
         model="gpt-4o-mini",
@@ -199,7 +201,7 @@ async def home_scrape(url):
             },
             {
                 "role": "user",
-                "content": f"Here is the scraped data from the company's website:\n\n{result.markdown.fit_markdown}",
+                "content": f"Here is the scraped data from the company's website:\n\n{result.markdown}",
             },
         ],
         response_format=CompanyDetails,
@@ -256,6 +258,7 @@ async def mini_links_scrape(links):
 
         for link in web_urls:
             result = await crawler.arun(url=link, config=config)
+
             completion = await asyncio.to_thread(
                 client.beta.chat.completions.parse,
                 model="gpt-4o-mini",
@@ -274,7 +277,7 @@ async def mini_links_scrape(links):
                     },
                     {
                         "role": "user",
-                        "content": f"Here is scrapped data of the companies web site: \n\n{result.markdown.fit_markdown}",
+                        "content": f"Here is scrapped data of the companies web site: \n\n{result.markdown}",
                     },
                 ],
                 response_format=CompanyDetails,
@@ -287,6 +290,8 @@ async def mini_links_scrape(links):
 
 
 async def main(url: str):
+    global scraped_data
+    scraped_data = None  # Reset data before scraping
     related_links = await home_scrape(url=url)
     url_scraped_true = await mini_links_scrape(links=json.loads(related_links))
     if url_scraped_true:
@@ -298,8 +303,3 @@ async def main(url: str):
         event = completion.choices[0].message.parsed.model_dump()
         company_details_json = json.dumps(event, indent=4)
         return company_details_json
-
-
-if __name__ == "__main__":
-    web_site = "https://onmeridian.com"
-    result = asyncio.run(main=main(url=web_site))
