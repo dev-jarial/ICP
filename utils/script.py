@@ -244,4 +244,60 @@ class Crawler:
             temperature=0.7,
         )
         content = start_content.choices[0].message.parsed.model_dump()
-        main_messages.append({"role": "user", "content": f"{content}"})
+        self.memory_state.append({"role": "user", "content": f"{content}"})
+
+        sorted_links = scrapped_links.choices[0].message.parsed.model_dump()
+        json_sorted_links = json.dumps(sorted_links)
+
+        "Scrape additional pages from extracted meaningful links using multi-threading."
+        web_urls = json_sorted_links.get("web_urls", [])
+
+        # Use asyncio.gather to run multiple scrape tasks in parallel
+        await asyncio.gather(
+            *[self.scrape_page(link, self.memory_state) for link in web_urls]
+        )
+
+        # Consolidate scraped data using OpenAI
+        completion = self.client.beta.chat.completions.parse(
+            model="gpt-4o",
+            messages=self.memory_state,
+            response_format=CompanyDetails,
+        )
+
+        company_details_json = json.dumps(
+            completion.choices[0].message.parsed.model_dump(), indent=4
+        )
+        return company_details_json
+
+    async def scrape_page(self, link, memory):
+        """Scrape a single page using the crawler in a separate thread."""
+        async with AsyncWebCrawler(config=self.browser_config) as crawler:
+            result = await crawler.arun(url=link, config=self.crawler_config)
+
+        completion = await asyncio.to_thread(
+            self.client.beta.chat.completions.parse,
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": """         
+            Focus on selecting following meaningful information about:
+            
+            - **Basic Information**: Name, email, contact numbers, HQ and office locations.
+            - **Business Overview**: Key capabilities, products, industry types, and partner categories.
+            - **Company Scale & Experience**: Years in operation, number of customers, number of employees.
+            - **Clients & Market Presence**: Top customers, case studies, client testimonials, OEM partnerships.
+            - **Management & Financials**: Leadership team details, annual revenue, average deal size.
+            - **Additional Data**: Operating countries, funding status, Google rating, product brochures.
+            """,
+                },
+                {
+                    "role": "user",
+                    "content": f"Scraped data from webpage:\n\n{result.markdown}",
+                },
+            ],
+            temperature=0.7,
+        )
+
+        extracted_data = completion.choices[0].message.parsed.model_dump()
+        memory.append({"role": "user", "content": json.dumps(extracted_data)})
