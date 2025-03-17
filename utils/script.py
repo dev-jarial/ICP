@@ -8,7 +8,6 @@ from crawl4ai.markdown_generation_strategy import DefaultMarkdownGenerator
 from openai import OpenAI
 from pydantic import BaseModel, Field
 
-client = OpenAI()
 # Step 1: Create a pruning filter
 prune_filter = PruningContentFilter(
     threshold=0.9,
@@ -144,6 +143,7 @@ class MeaningFullLinks(BaseModel):
 
 class Crawler:
     def __init__(self, url):
+        self.client = OpenAI()
         self.browser_config = browser_config
         self.config = config
         self.url = url
@@ -160,7 +160,7 @@ class Crawler:
                     links.pop("base_domain", None)
 
         start_content = await asyncio.to_thread(
-            client.beta.chat.completions.parse,
+            self.client.chat.completions.create,
             model="gpt-4o-mini",
             messages=[
                 {
@@ -211,7 +211,7 @@ class Crawler:
         )
 
         scrapped_links = await asyncio.to_thread(
-            client.beta.chat.completions.parse,
+            self.client.chat.completions.create,
             model="gpt-4o-mini",
             messages=[
                 {
@@ -275,7 +275,7 @@ class Crawler:
             result = await crawler.arun(url=link, config=self.crawler_config)
 
         completion = await asyncio.to_thread(
-            self.client.beta.chat.completions.parse,
+            self.client.chat.completions.create,
             model="gpt-4o-mini",
             messages=[
                 {
