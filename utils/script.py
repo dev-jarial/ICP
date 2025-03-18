@@ -8,11 +8,13 @@ from crawl4ai.markdown_generation_strategy import DefaultMarkdownGenerator
 from openai import OpenAI
 from pydantic import BaseModel, Field
 
+OPENAI_MODEL = "gpt-4o-mini"
+
 # Step 1: Create a pruning filter
 prune_filter = PruningContentFilter(
-    threshold=0.9,
+    # threshold=0.9,
     threshold_type="fixed",
-    min_word_threshold=50,
+    # min_word_threshold=50,
 )
 
 # Step 2: Insert it into a Markdown Generator
@@ -31,7 +33,7 @@ browser_config = BrowserConfig(headless=True)
 
 class CompanyDetails(BaseModel):
     name: str = Field(..., description="The official registered name of the company.")
-    email_id: str = Field(
+    email: str = Field(
         ...,
         description="The company's official email address (sales, HR, or general contact).",
     )
@@ -132,12 +134,9 @@ main_messages = [
 
 
 class MeaningFullLinks(BaseModel):
-    web_urls: List[str] = Field(
+    links: List[str] = Field(
         ...,
-        description="web based content render urls",
-    )
-    doc_urls: List[str] = Field(
-        ..., description="those urls, which contains pdf, txt, docs location"
+        description="links those hold meaningful information!",
     )
 
 
@@ -207,17 +206,16 @@ class Crawler:
                     "content": f"Here is the scraped data from the company's website:\n\n{result.markdown}",
                 },
             ],
-            temperature=0.8,
         )
 
         scrapped_links = await asyncio.to_thread(
-            self.client.chat.completions.create,
-            model="gpt-4o-mini",
+            self.client.beta.chat.completions.parse,
+            model=OPENAI_MODEL,
             messages=[
                 {
                     "role": "system",
                     "content": """Your task is to analyze a list of scraped internal links from a company's website 
-            and identify **4-5 most relevant links** that are likely to contain key company details. 
+            and identify **5-7 most relevant links** that are likely to contain key company details. 
             
             Focus on selecting links that provide meaningful information about:
             
@@ -235,69 +233,71 @@ class Crawler:
                 {
                     "role": "user",
                     "content": f"""Here are the scraped internal links from the company's website:\n\n{str(internal_links)}
-
-            From these, extract only 4-5 links that are most relevant for gathering the above company details.
             """,
                 },
             ],
             response_format=MeaningFullLinks,
-            temperature=0.7,
         )
-        content = start_content.choices[0].message.parsed.model_dump()
+        content = start_content.choices[0].message.content
         self.memory_state.append({"role": "user", "content": f"{content}"})
 
         sorted_links = scrapped_links.choices[0].message.parsed.model_dump()
-        json_sorted_links = json.dumps(sorted_links)
+        print(type(sorted_links))
 
         "Scrape additional pages from extracted meaningful links using multi-threading."
-        web_urls = json_sorted_links.get("web_urls", [])
+        web_urls = sorted_links["links"]
 
         # Use asyncio.gather to run multiple scrape tasks in parallel
         await asyncio.gather(
             *[self.scrape_page(link, self.memory_state) for link in web_urls]
         )
-
+        message = json.dumps(self.memory_state)
+        print("\n\n", message, "\n\n")
         # Consolidate scraped data using OpenAI
         completion = self.client.beta.chat.completions.parse(
-            model="gpt-4o",
+            model=OPENAI_MODEL,
             messages=self.memory_state,
             response_format=CompanyDetails,
         )
 
         company_details_json = json.dumps(
-            completion.choices[0].message.parsed.model_dump(), indent=4
+            completion.choices[0].message.parsed.model_dump()
         )
         return company_details_json
 
     async def scrape_page(self, link, memory):
         """Scrape a single page using the crawler in a separate thread."""
         async with AsyncWebCrawler(config=self.browser_config) as crawler:
-            result = await crawler.arun(url=link, config=self.crawler_config)
+            result = await crawler.arun(url=link, config=self.config)
 
-        completion = await asyncio.to_thread(
-            self.client.chat.completions.create,
-            model="gpt-4o-mini",
-            messages=[
-                {
-                    "role": "system",
-                    "content": """         
-            Focus on selecting following meaningful information about:
-            
-            - **Basic Information**: Name, email, contact numbers, HQ and office locations.
-            - **Business Overview**: Key capabilities, products, industry types, and partner categories.
-            - **Company Scale & Experience**: Years in operation, number of customers, number of employees.
-            - **Clients & Market Presence**: Top customers, case studies, client testimonials, OEM partnerships.
-            - **Management & Financials**: Leadership team details, annual revenue, average deal size.
-            - **Additional Data**: Operating countries, funding status, Google rating, product brochures.
-            """,
-                },
-                {
-                    "role": "user",
-                    "content": f"Scraped data from webpage:\n\n{result.markdown}",
-                },
-            ],
-            temperature=0.7,
-        )
+        if len(result.markdown) > 10:
+            completion = await asyncio.to_thread(
+                self.client.chat.completions.create,
+                model=OPENAI_MODEL,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": """         
+                Focus on selecting following meaningful information about:
+                
+                - **Basic Information**: Name, email, contact numbers, HQ and office locations.
+                - **Business Overview**: Key capabilities, products, industry types, and partner categories.
+                - **Company Scale & Experience**: Years in operation, number of customers, number of employees.
+                - **Clients & Market Presence**: Top customers, case studies, client testimonials, OEM partnerships.
+                - **Management & Financials**: Leadership team details, annual revenue, average deal size.
+                - **Additional Data**: Operating countries, funding status, Google rating, product brochures.
+                """,
+                    },
+                    {
+                        "role": "user",
+                        "content": f"Scraped data from webpage:\n\n{result.markdown}",
+                    },
+                ],
+            )
 
-        extracted_data = completion.choices[0].message.parsed.model_dump()
-        memory.append({"role": "user", "content": json.dumps(extracted_data)})
+            content = completion.choices[0].message.content
+            memory.append({"role": "user", "content": json.dumps(content)})
+
+
+crawl = Crawler("https://www.crayon.com")
+print(asyncio.run(crawl.start()))
