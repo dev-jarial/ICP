@@ -19,7 +19,7 @@ class Company(models.Model):
     number_of_employees = models.CharField(blank=True, null=True)
 
     top_customer_names = models.TextField()  # Store list of top customers
-    case_studies_available = models.TextField()
+    case_studies = models.TextField()
 
     # Store brochure URL instead of boolean
     product_brochure_link = models.URLField(blank=True, null=True)
