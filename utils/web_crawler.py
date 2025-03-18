@@ -53,7 +53,7 @@ main_messages = [
 
 class CompanyDetails(BaseModel):
     name: str = Field(..., description="The official registered name of the company.")
-    email_id: str = Field(
+    email: str = Field(
         ...,
         description="The company's official email address (sales, HR, or general contact).",
     )
@@ -63,23 +63,21 @@ class CompanyDetails(BaseModel):
     general_contact_number: str = Field(
         ..., description="The company's general contact number, usually a landline."
     )
-    hq_address: list[str] = Field(
+    hq_address: str = Field(
         ..., description="The location(s) of the company's headquarters."
     )
-    locations_offices: list[str] = Field(
+    locations_offices: str = Field(
         ..., description="The locations of the company's branch or regional offices."
     )
-    key_capabilities: list[str] = Field(
+    key_capabilities: str = Field(
         ..., description="The company's core competencies or areas of expertise."
     )
-    products: list[str] = Field(
-        ..., description="Products the company develops or offers."
-    )
-    industry_types: list[str] = Field(
+    products: str = Field(..., description="Products the company develops or offers.")
+    industry_types: str = Field(
         ...,
         description="Industries in which the company operates (e.g., Healthcare, IT, Defense).",
     )
-    partner_category: list[str] = Field(
+    partner_category: str = Field(
         ..., description="Categories describing the company's business partnerships."
     )
     number_of_years: str = Field(
@@ -91,21 +89,21 @@ class CompanyDetails(BaseModel):
     number_of_employees: str = Field(
         ..., description="The total number of employees working in the company."
     )
-    top_customer_names: list[str] = Field(
+    top_customer_names: str = Field(
         ..., description="A list of notable or major customers of the company."
     )
-    case_studies_available: list[str] = Field(
+    case_studies_available: str = Field(
         ...,
         description="Case studies showcasing real-world applications of the company's solutions.",
     )
     product_brochure: str = Field(
         ..., description="A URL link to the company's product brochure or catalog."
     )
-    client_testimonials: list[str] = Field(
+    client_testimonials: str = Field(
         ...,
         description="Statements from clients endorsing the company's products or services.",
     )
-    oems_working_with: list[str] = Field(
+    oems_working_with: str = Field(
         ...,
         description="OEMs (Original Equipment Manufacturers) that the company collaborates with.",
     )
@@ -113,7 +111,7 @@ class CompanyDetails(BaseModel):
         ...,
         description="A concise overview of the company's history, vision, and operations.",
     )
-    top_management_details: list[str] = Field(
+    top_management_details: str = Field(
         ...,
         description="Information about top executives, their roles, and company hierarchy.",
     )
@@ -123,7 +121,7 @@ class CompanyDetails(BaseModel):
     average_deal_size: float = Field(
         ..., description="The typical value of a business deal closed by the company."
     )
-    operating_countries: list[str] = Field(
+    operating_countries: str = Field(
         ...,
         description="The countries where the company has operations or business presence.",
     )
@@ -292,7 +290,7 @@ async def mini_links_scrape(links):
 async def main(url: str):
     global scraped_data
     scraped_data = None  # Reset data before scraping
-    main_messages = []  # Clear stored messages
+    # main_messages = []  # Clear stored messages
     related_links = await home_scrape(url=url)
     url_scraped_true = await mini_links_scrape(links=json.loads(related_links))
     if url_scraped_true:
