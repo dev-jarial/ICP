@@ -271,7 +271,7 @@ class Crawler:
         if len(result.markdown) > 10:
             completion = await asyncio.to_thread(
                 self.client.beta.chat.completions.parse,
-                model=OPENAI_MODEL,
+                model="gpt-4o",
                 messages=[
                     {
                         "role": "system",
