@@ -33,70 +33,60 @@ def company_form_view(request):
                     # Ensure JSON is properly formatted
                     if isinstance(scraped_data, str):
                         scraped_data = json.loads(scraped_data)
-
                     # Save scraped data to the database
                     company, created = Company.objects.update_or_create(
                         website_link=website_link,
                         defaults={
-                            "name": scraped_data.get("name", ""),
-                            "email": scraped_data.get("email_id", None),
-                            "mobile_number": scraped_data.get("mobile_number", None),
+                            "name": scraped_data.get("name"),
+                            "email": scraped_data.get("email"),
+                            "mobile_number": scraped_data.get("mobile_number"),
                             "general_contact_number": scraped_data.get(
-                                "general_contact_number", None
+                                "general_contact_number"
                             ),
-                            "hq_address": scraped_data.get("hq_address", []),
-                            "locations": scraped_data.get("locations_offices", []),
-                            "key_capabilities": scraped_data.get(
-                                "key_capabilities", []
-                            ),
-                            "products": scraped_data.get("products", []),
-                            "industry_types": scraped_data.get("industry_types", []),
-                            "partner_category": scraped_data.get(
-                                "partner_category", []
-                            ),
-                            "number_of_years": scraped_data.get(
-                                "number_of_years", None
-                            ),
+                            "hq_address": scraped_data.get("hq_address"),
+                            "locations": scraped_data.get("locations_offices"),
+                            "key_capabilities": scraped_data.get("key_capabilities"),
+                            "products": scraped_data.get("products"),
+                            "industry_types": scraped_data.get("industry_types"),
+                            "partner_category": scraped_data.get("partner_category"),
+                            "number_of_years": scraped_data.get("number_of_years"),
                             "number_of_customers": scraped_data.get(
-                                "number_of_customers", None
+                                "number_of_customers"
                             ),
                             "number_of_employees": scraped_data.get(
-                                "number_of_employees", None
+                                "number_of_employees"
                             ),
                             "top_customer_names": scraped_data.get(
-                                "top_customer_names", []
+                                "top_customer_names"
                             ),
                             "case_studies_available": scraped_data.get(
-                                "case_studies_available", []
+                                "case_studies_available"
                             ),
                             "product_brochure_link": scraped_data.get(
-                                "product_brochure", None
+                                "product_brochure"
                             ),
                             "client_testimonials": scraped_data.get(
-                                "client_testimonials", []
+                                "client_testimonials"
                             ),
-                            "oems_working_with": scraped_data.get(
-                                "oems_working_with", []
-                            ),
+                            "oems_working_with": scraped_data.get("oems_working_with"),
                             "brief_company_profile": scraped_data.get(
-                                "brief_company_profile", None
+                                "brief_company_profile"
                             ),
                             "top_management_details": scraped_data.get(
-                                "top_management_details", []
+                                "top_management_details"
                             ),
-                            "annual_revenue": scraped_data.get("annual_revenue", None),
-                            "average_deal_size": scraped_data.get(
-                                "average_deal_size", None
-                            ),
+                            "annual_revenue": scraped_data.get("annual_revenue"),
+                            "average_deal_size": scraped_data.get("average_deal_size"),
                             "operating_countries": scraped_data.get(
-                                "operating_countries", []
+                                "operating_countries"
                             ),
-                            "funding_status": scraped_data.get("funding_status", None),
-                            "google_rating": scraped_data.get("google_rating", None),
+                            "funding_status": scraped_data.get("funding_status"),
+                            "google_rating": scraped_data.get("google_rating"),
                         },
                     )
 
                 except Exception as e:
+                    print(e)
                     error = f"Failed to scrape data: {str(e)}"
 
     return render(
