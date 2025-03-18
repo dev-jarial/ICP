@@ -294,7 +294,7 @@
             <tr>
                 <th>HQ Address</th>
                 <td>
-                    {{ scraped_data.hq_address }}
+                    {{ scraped_data.hq_address | safe}}
                 </td>
             </tr>
             <tr>
@@ -338,67 +338,67 @@
             <tr>
                 <th>Locations</th>
                 <td>
-                    {{scraped_data.locations_offices}}
+                    {{scraped_data.locations | safe}}
                 </td>
             </tr>
             <tr>
                 <th>Key Capabilities</th>
                 <td>
-                    {{scraped_data.key_capabilities}}
+                    {{scraped_data.key_capabilities | safe}}
                 </td>
             </tr>
             <tr>
                 <th>Products</th>
                 <td>
-                    {{ scraped_data.products }}
+                    {{ scraped_data.products | safe}}
                 </td>
             </tr>
             <tr>
                 <th>Industry Types</th>
                 <td>
-                    {{ scraped_data.industry_types }}
+                    {{ scraped_data.industry_types | safe}}
                 </td>
             </tr>
             <tr>
                 <th>Partner Categories</th>
                 <td>
-                        {{scraped_data.partner_category}}
+                    {{ scraped_data.partner_category | safe}}
                 </td>
             </tr>
             <tr>
                 <th>Top Customers</th>
                 <td>
-                    {{ scraped_data.top_customer_names}}
+                    {{ scraped_data.top_customer_names | safe}}
                 </td>
             </tr>
             <tr>
                 <th>Client Testimonials</th>
                 <td>
-                    {{scraped_data.client_testimonials }}
+                    {{scraped_data.client_testimonials | safe}}
                 </td>
             </tr>
             <tr>
                 <th>Top Management</th>
                 <td>
-                        {{scraped_data.top_management_details}}
+                    {{ scraped_data.top_management_details | safe}}
                 </td>
             </tr>
             <tr>
                 <th>Operating Countries</th>
                 <td>
-                        {{scraped_data.operating_countries}}
+                    {{ scraped_data.operating_countries | safe}}
                 </td>
             </tr>
             <tr>
                 <th>OEMs Working With</th>
                 <td>
-                        {{scraped_data.oems_working_with}}
+                    {{ scraped_data.oems_working_with | safe}}
                 </td>
             </tr>
             <tr>
                 <th>Case Studies</th>
                 <td>
-                        {{scraped_data.case_studies_available}}
+                    {{ scraped_data.case_studies | safe}}
                 </td>
             </tr>
 
