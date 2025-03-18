@@ -25,7 +25,6 @@ config = CrawlerRunConfig(
     exclude_external_links=True,
     wait_for_images=False,
     image_description_min_word_threshold=False,
-    cache_mode=CacheMode.DISABLED,
 )
 
 browser_config = BrowserConfig(headless=True)
@@ -43,21 +42,23 @@ class CompanyDetails(BaseModel):
     general_contact_number: str = Field(
         ..., description="The company's general contact number, usually a landline."
     )
-    hq_address: str = Field(
+    hq_address: list[str] = Field(
         ..., description="The location(s) of the company's headquarters."
     )
-    locations_offices: str = Field(
+    locations_offices: list[str] = Field(
         ..., description="The locations of the company's branch or regional offices."
     )
-    key_capabilities: str = Field(
+    key_capabilities: list[str] = Field(
         ..., description="The company's core competencies or areas of expertise."
     )
-    products: str = Field(..., description="Products the company develops or offers.")
-    industry_types: str = Field(
+    products: list[str] = Field(
+        ..., description="Products the company develops or offers."
+    )
+    industry_types: list[str] = Field(
         ...,
         description="Industries in which the company operates (e.g., Healthcare, IT, Defense).",
     )
-    partner_category: str = Field(
+    partner_category: list[str] = Field(
         ..., description="Categories describing the company's business partnerships."
     )
     number_of_years: str = Field(
@@ -69,21 +70,21 @@ class CompanyDetails(BaseModel):
     number_of_employees: str = Field(
         ..., description="The total number of employees working in the company."
     )
-    top_customer_names: str = Field(
+    top_customer_names: list[str] = Field(
         ..., description="A list of notable or major customers of the company."
     )
-    case_studies_available: str = Field(
+    case_studies: list[str] = Field(
         ...,
         description="Case studies showcasing real-world applications of the company's solutions.",
     )
     product_brochure: str = Field(
         ..., description="A URL link to the company's product brochure or catalog."
     )
-    client_testimonials: str = Field(
+    client_testimonials: list[str] = Field(
         ...,
         description="Statements from clients endorsing the company's products or services.",
     )
-    oems_working_with: str = Field(
+    oems_working_with: list[str] = Field(
         ...,
         description="OEMs (Original Equipment Manufacturers) that the company collaborates with.",
     )
@@ -91,7 +92,7 @@ class CompanyDetails(BaseModel):
         ...,
         description="A concise overview of the company's history, vision, and operations.",
     )
-    top_management_details: str = Field(
+    top_management_details: list[str] = Field(
         ...,
         description="Information about top executives, their roles, and company hierarchy.",
     )
@@ -101,7 +102,7 @@ class CompanyDetails(BaseModel):
     average_deal_size: float = Field(
         ..., description="The typical value of a business deal closed by the company."
     )
-    operating_countries: str = Field(
+    operating_countries: list[str] = Field(
         ...,
         description="The countries where the company has operations or business presence.",
     )
@@ -160,11 +161,11 @@ class Crawler:
 
         start_content = await asyncio.to_thread(
             self.client.chat.completions.create,
-            model="gpt-4o-mini",
+            model=OPENAI_MODEL,
             messages=[
                 {
                     "role": "system",
-                    "content": """Your task is to extract key company details from the provided structured data.  Please provide all relevant information information within 1024 tokens
+                    "content": """Your task is to extract key company details from the provided structured data.
                     Focus on the following aspects:
 
                     1. **Basic Company Information**:
@@ -242,7 +243,6 @@ class Crawler:
         self.memory_state.append({"role": "user", "content": f"{content}"})
 
         sorted_links = scrapped_links.choices[0].message.parsed.model_dump()
-        print(type(sorted_links))
 
         "Scrape additional pages from extracted meaningful links using multi-threading."
         web_urls = sorted_links["links"]
@@ -251,8 +251,6 @@ class Crawler:
         await asyncio.gather(
             *[self.scrape_page(link, self.memory_state) for link in web_urls]
         )
-        message = json.dumps(self.memory_state)
-        print("\n\n", message, "\n\n")
         # Consolidate scraped data using OpenAI
         completion = self.client.beta.chat.completions.parse(
             model=OPENAI_MODEL,
@@ -272,20 +270,21 @@ class Crawler:
 
         if len(result.markdown) > 10:
             completion = await asyncio.to_thread(
-                self.client.chat.completions.create,
+                self.client.beta.chat.completions.parse,
                 model=OPENAI_MODEL,
                 messages=[
                     {
                         "role": "system",
                         "content": """         
-                Focus on selecting following meaningful information about:
-                
-                - **Basic Information**: Name, email, contact numbers, HQ and office locations.
-                - **Business Overview**: Key capabilities, products, industry types, and partner categories.
-                - **Company Scale & Experience**: Years in operation, number of customers, number of employees.
-                - **Clients & Market Presence**: Top customers, case studies, client testimonials, OEM partnerships.
-                - **Management & Financials**: Leadership team details, annual revenue, average deal size.
-                - **Additional Data**: Operating countries, funding status, Google rating, product brochures.
+                            Please extract the relevant details about the company from the following 
+                            information. Focus on the company's name, email address, contact number, and physical address. Identify the 
+                            various locations where the company has offices. List the categories of services offered, along with 
+                            any specific products the company provides. Also, extract the types of industries the company serves.
+                            Include details about the company’s experience, such as how long it has been in business, the 
+                            number of customers it serves, and the number of employees it has. Make sure to mention any key 
+                            clients or notable customers. If there are any client testimonials, include them as well. Identify
+                            the key people in the management team and list their roles. Lastly, check for any case studies, 
+                            brochures, or OEM details, and include a rating or review if available.
                 """,
                     },
                     {
@@ -293,11 +292,8 @@ class Crawler:
                         "content": f"Scraped data from webpage:\n\n{result.markdown}",
                     },
                 ],
+                response_format=CompanyDetails,
             )
+            content = completion.choices[0].message.parsed.model_dump()
 
-            content = completion.choices[0].message.content
-            memory.append({"role": "user", "content": json.dumps(content)})
-
-
-crawl = Crawler("https://www.crayon.com")
-print(asyncio.run(crawl.start()))
+            memory.append({"role": "user", "content": f"{content}"})
