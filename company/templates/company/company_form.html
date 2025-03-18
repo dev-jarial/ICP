@@ -29,6 +29,15 @@
         position: relative;
     }
 
+    .company-logo {
+        position: absolute;
+        top: 20px;
+        left: 5%;
+        width: 300px;
+        height: auto;
+        z-index: 10;
+    }
+
     /* Matrix Background Effect */
     .matrix-background {
         position: fixed;
@@ -219,6 +228,9 @@
         .matrix-text {
             font-size: 25px;
         }
+        .company-logo {
+            width: 150px; /* Adjust for smaller screens */
+        }
     }
 
     @media (max-width: 480px) {
@@ -251,8 +263,9 @@
     }
 </style>
 
-<!-- Matrix Background Effect -->
-<div class="matrix-background"></div>
+
+<img src="{% static 'images/final-logo.svg' %}" alt="Company Logo" class="company-logo">
+
 
 <!-- Main Scraper Form -->
 <div class="container">
