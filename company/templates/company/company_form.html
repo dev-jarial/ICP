@@ -281,7 +281,7 @@
             </tr>
             <tr>
                 <th>Email ID</th>
-                <td>{{ scraped_data.email_id }}</td>
+                <td>{{ scraped_data.email }}</td>
             </tr>
             <tr>
                 <th>Mobile Number</th>
@@ -294,11 +294,7 @@
             <tr>
                 <th>HQ Address</th>
                 <td>
-                    <ul>
-                        {% for hq_address in scraped_data.hq_address %}
-                        <li>{{ hq_address }}</li>
-                        {% endfor %}
-                    </ul>
+                    {{ scraped_data.hq_address }}
                 </td>
             </tr>
             <tr>
@@ -342,111 +338,67 @@
             <tr>
                 <th>Locations</th>
                 <td>
-                    <ul>
-                        {% for location in scraped_data.locations_offices %}
-                        <li>{{ location }}</li>
-                        {% endfor %}
-                    </ul>
+                    {{scraped_data.locations_offices}}
                 </td>
             </tr>
             <tr>
                 <th>Key Capabilities</th>
                 <td>
-                    <ul>
-                        {% for capability in scraped_data.key_capabilities %}
-                        <li>{{ capability }}</li>
-                        {% endfor %}
-                    </ul>
+                    {{scraped_data.key_capabilities}}
                 </td>
             </tr>
             <tr>
                 <th>Products</th>
                 <td>
-                    <ul>
-                        {% for product in scraped_data.products %}
-                        <li>{{ product }}</li>
-                        {% endfor %}
-                    </ul>
+                    {{ scraped_data.products }}
                 </td>
             </tr>
             <tr>
                 <th>Industry Types</th>
                 <td>
-                    <ul>
-                        {% for industry in scraped_data.industry_types %}
-                        <li>{{ industry }}</li>
-                        {% endfor %}
-                    </ul>
+                    {{ scraped_data.industry_types }}
                 </td>
             </tr>
             <tr>
                 <th>Partner Categories</th>
                 <td>
-                    <ul>
-                        {% for partner in scraped_data.partner_category %}
-                        <li>{{ partner }}</li>
-                        {% endfor %}
-                    </ul>
+                        {{scraped_data.partner_category}}
                 </td>
             </tr>
             <tr>
                 <th>Top Customers</th>
                 <td>
-                    <ul>
-                        {% for customer in scraped_data.top_customer_names %}
-                        <li>{{ customer }}</li>
-                        {% endfor %}
-                    </ul>
+                    {{ scraped_data.top_customer_names}}
                 </td>
             </tr>
             <tr>
                 <th>Client Testimonials</th>
                 <td>
-                    <ul>
-                        {% for testimonial in scraped_data.client_testimonials %}
-                        <li>{{ testimonial }}</li>
-                        {% endfor %}
-                    </ul>
+                    {{scraped_data.client_testimonials }}
                 </td>
             </tr>
             <tr>
                 <th>Top Management</th>
                 <td>
-                    <ul>
-                        {% for manager in scraped_data.top_management_details %}
-                        <li>{{ manager }}</li>
-                        {% endfor %}
-                    </ul>
+                        {{scraped_data.top_management_details}}
                 </td>
             </tr>
             <tr>
                 <th>Operating Countries</th>
                 <td>
-                    <ul>
-                        {% for country in scraped_data.operating_countries %}
-                        <li>{{ country }}</li>
-                        {% endfor %}
-                    </ul>
+                        {{scraped_data.operating_countries}}
                 </td>
             </tr>
             <tr>
                 <th>OEMs Working With</th>
                 <td>
-                    <ul>
-                        {% for oem in scraped_data.oems_working_with %}
-                        <li>{{ oem }}</li>
-                        {% endfor %}
-                    </ul>
+                        {{scraped_data.oems_working_with}}
                 </td>
             </tr>
             <tr>
                 <th>Case Studies</th>
                 <td>
-                    <ul>
-                        {% for case_study in scraped_data.case_studies_available %}
-                        <li>{{ case_study }}</li>
-                        {% endfor %}
-                    </ul>
+                        {{scraped_data.case_studies_available}}
                 </td>
             </tr>
 
