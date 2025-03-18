@@ -1,6 +1,8 @@
 import csv
 
 import openpyxl
+from ckeditor.widgets import CKEditorWidget
+from django import forms
 from django.contrib import admin
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -70,10 +72,36 @@ def export_as_excel(modeladmin, request, queryset):
     return response
 
 
+class CompanyAdminForm(forms.ModelForm):
+    """Custom admin form with an HTML-rendered textarea for certain fields."""
+
+    class Meta:
+        model = Company
+        fields = "__all__"  # Include all fields
+
+        # Apply the custom widget to specific fields that contain HTML
+        widgets = {
+            "hq_address": CKEditorWidget(),
+            "locations": CKEditorWidget(),
+            "key_capabilities": CKEditorWidget(),
+            "products": CKEditorWidget(),
+            "industry_types": CKEditorWidget(),
+            "partner_category": CKEditorWidget(),
+            "top_customer_names": CKEditorWidget(),
+            "case_studies": CKEditorWidget(),
+            "client_testimonials": CKEditorWidget(),
+            "oems_working_with": CKEditorWidget(),
+            "top_management_details": CKEditorWidget(),
+            "operating_countries": CKEditorWidget(),
+        }
+
+
 class CompanyAdmin(admin.ModelAdmin):
     list_display = ("edit_button", "name", "email", "download_links", "view_details")
     search_fields = ("name", "email")
     ordering = ("id",)
+    # Apply a larger textarea to TextField inputs (optional)
+    form = CompanyAdminForm
     actions = [export_as_csv, export_as_excel]
 
     def get_urls(self):
