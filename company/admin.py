@@ -120,7 +120,7 @@ class CompanyAdmin(admin.ModelAdmin):
             "admin:company_admin_view", args=[obj.id]
         )  # Ensure correct URL pattern
         return format_html(
-            '<a href="{}" title="View Details"><i class="fa fa-eye"></i> View</a>',
+            '<a href="{}" class="button" title="View Details"><i class="fa fa-eye"></i> View</a>',
             view_url,
         )
 
