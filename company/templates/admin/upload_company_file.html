@@ -1,6 +1,7 @@
+{% load static %}
 {% block content %}
 <style>
-    /* Global Styling */
+    /* Global Styles */
     * {
         margin: 0;
         padding: 0;
@@ -10,14 +11,16 @@
 
     html,
     body {
+        height: auto;
         min-height: 100vh;
         overflow-y: auto;
+        /* Ensures scrolling is allowed */
         overflow-x: hidden;
         scroll-behavior: smooth;
     }
 
     body {
-        background: linear-gradient(to right, #1e3c72, #2a5298);
+        background: grey;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -26,7 +29,7 @@
         position: relative;
     }
 
-    /* Matrix Background */
+    /* Matrix Background Effect */
     .matrix-background {
         position: fixed;
         top: 0;
@@ -42,7 +45,7 @@
         font-size: 40px;
         font-weight: 800;
         color: white;
-        text-shadow: 0 0 8px rgba(176, 176, 176, 0.8);
+        text-shadow: 0 0 8px rgb(176, 176, 176);
         white-space: nowrap;
         animation: fall linear infinite;
     }
@@ -63,13 +66,9 @@
         }
     }
 
-    /* Upload Container */
+    /* Main Container */
     .upload-container {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        /* Perfect centering */
+        position: relative;
         background: rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(10px);
         border-radius: 20px;
@@ -81,8 +80,9 @@
         border: 1px solid rgba(255, 255, 255, 0.2);
         animation: fadeIn 1s ease-in-out;
         z-index: 2;
+        margin-bottom: 20px;
+        /* Ensures spacing at the bottom */
     }
-
 
     h2 {
         font-size: 26px;
@@ -97,23 +97,24 @@
         margin-bottom: 20px;
     }
 
-    /* Form Styling */
     form {
         display: flex;
         flex-direction: column;
         gap: 15px;
     }
 
-    input[type="file"] {
+    input[type="file"],
+    textarea {
         width: 100%;
         padding: 12px;
         border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 8px;
         font-size: 16px;
+        transition: 0.3s;
+        outline: none;
         background: rgba(255, 255, 255, 0.2);
         color: #ffffff;
         text-align: center;
-        cursor: pointer;
     }
 
     input[type="file"]::file-selector-button {
@@ -127,53 +128,74 @@
         transition: all 0.3s ease-in-out;
     }
 
-    input[type="file"]::file-selector-button:hover {
-        background: linear-gradient(135deg, #ff758c, #ff4f70);
+    input[type="file"]:focus {
+        background: rgba(255, 255, 255, 0.3);
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
     }
 
-    .button {
-        padding: 20px 30px;
+    .btn-primary {
+        padding: 12px;
         border: none;
-        border-radius: 10px;
-        font-size: 20px;
+        border-radius: 8px;
+        font-size: 16px;
         font-weight: bold;
         color: white;
         background: linear-gradient(135deg, #ff7eb3, #ff758c);
         transition: all 0.3s ease-in-out;
         cursor: pointer;
-        width: 100%;
-        height: 40px;
-        margin: 15px auto;
-        display: block;
     }
 
-    .button:hover {
+    .btn-primary:hover {
         transform: scale(1.05);
         background: linear-gradient(135deg, #ff758c, #ff4f70);
     }
 
-    /* Message Styling */
-    .messages {
-        list-style: none;
-        padding: 0;
-        margin-bottom: 15px;
+    /* Loading Spinner */
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top: 4px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 10px auto;
     }
 
-    .messages li {
-        padding: 10px;
-        border-radius: 5px;
-        margin-bottom: 5px;
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Scraped Data Output */
+    .output-container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+        max-width: 600px;
+        width: 100%;
         color: white;
-        font-size: 14px;
-        text-align: center;
+        text-align: left;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
 
-    .messages .success {
-        background: rgba(76, 175, 80, 0.8);
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
     }
 
-    .messages .error {
-        background: rgba(244, 67, 54, 0.8);
+    .data-table th,
+    .data-table td {
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 8px;
+        text-align: left;
+        color: white;
     }
 
     /* Responsive Design */
@@ -193,10 +215,12 @@
 
         input[type="file"] {
             font-size: 14px;
+            padding: 10px;
         }
 
-        .button {
+        .btn-primary {
             font-size: 14px;
+            padding: 10px;
         }
 
         .matrix-text {
@@ -220,10 +244,12 @@
 
         input[type="file"] {
             font-size: 13px;
+            padding: 8px;
         }
 
-        .button {
+        .btn-primary {
             font-size: 13px;
+            padding: 8px;
         }
 
         .matrix-text {
@@ -231,6 +257,7 @@
         }
     }
 </style>
+
 
 <!-- Matrix Background -->
 <div class="matrix-background"></div>
@@ -250,7 +277,7 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="button">Upload</button>
+        <button type="submit" class="btn-primary">Upload</button>
     </form>
 </div>
 
@@ -278,7 +305,7 @@
     }
 
     // Generate falling text at intervals
-    setInterval(createFallingText, 300);
+    // setInterval(createFallingText, 300);
 </script>
 
 {% endblock %}
