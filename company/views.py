@@ -111,25 +111,29 @@ def upload_company_file(request):
             try:
                 # Read CSV or Excel file
                 df = (
-                    pd.read_csv(file_path, header=None)
+                    pd.read_csv(file_path, header=None, dtype=str)
                     if file_path.endswith(".csv")
-                    else pd.read_excel(file_path, header=None)
+                    else pd.read_excel(file_path, header=None, dtype=str)
                 )
-                df = df.dropna().reset_index(drop=True)
+                df = df.dropna(how="all").reset_index(drop=True)  # remove empty rows
 
                 # Ensure valid structure
-                if df.empty or df.shape[1] != 1:
+                if df.empty:
                     messages.error(
-                        request, "The file should contain exactly one column with URLs."
+                        request, "The file is empty or does not contain valid data."
                     )
                     return redirect("company:upload_company_file")
 
-                # Extract and validate URLs
-                valid_urls = [
-                    str(row.iloc[0]).strip()
-                    for _, row in df.iterrows()
-                    if validators.url(str(row.iloc[0]).strip())
-                ]
+                # Extract and validate all URLs from all the columns
+                valid_urls = set()
+
+                for _, row in df.iterrows():
+                    for value in row:
+                        if isinstance(value, str):
+                            value = value.strip()
+                            if validators.url(value):
+                                print(value)
+                                valid_urls.add(value)
 
                 if not valid_urls:
                     messages.warning(
@@ -137,13 +141,14 @@ def upload_company_file(request):
                     )
                     return redirect("company:upload_company_file")
 
-                # Run the processing in the background using Celery
-                process_uploaded_file.delay(valid_urls)
+                # Convert set to list and send to Celery task
+                valid_urls_list = list(valid_urls)
+                process_uploaded_file.delay(valid_urls_list)
 
                 # Send response immediately with the count of valid URLs
                 messages.success(
                     request,
-                    f"Total {len(valid_urls)} valid URLs found. Processing in background.",
+                    f"Total {len(valid_urls_list)} valid URLs found. Processing in background.",
                 )
 
                 return redirect("company:upload_company_file")
