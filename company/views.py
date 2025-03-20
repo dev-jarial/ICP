@@ -67,6 +67,9 @@ def company_form_view(request):
                         "oems_working_with": listToStr(
                             scraped_data.get("oems_working_with")
                         ),
+                        "oem_partnership_status": listToStr(
+                            scraped_data.get("oem_partnership_status")
+                        ),
                         "brief_company_profile": scraped_data.get(
                             "brief_company_profile"
                         ),
