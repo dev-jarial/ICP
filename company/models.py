@@ -39,6 +39,7 @@ class Company(models.Model):
     #     default=list
     # )  # Store competitor websites
     funding_status = models.CharField(blank=True, null=True)
+    youtube_videos = RichTextField(blank=True, null=True)
     google_rating = models.CharField(blank=True, null=True)  # Google rating (e.g., 4.5)
 
     website_link = models.URLField()
