@@ -26,7 +26,8 @@ class Company(models.Model):
     product_brochure_link = models.URLField(blank=True, null=True)
 
     client_testimonials = RichTextField()
-    oems_working_with = RichTextField()  # Store list of OEM partners
+    oems_working_with = RichTextField()
+    oem_partnership_status = RichTextField(blank=True, null=True)
     brief_company_profile = RichTextField(blank=True, null=True)
 
     top_management_details = RichTextField()  # Store management details
