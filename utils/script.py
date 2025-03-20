@@ -110,6 +110,10 @@ class CompanyDetails(BaseModel):
     funding_status: str = Field(
         ..., description="The current funding stage or financial status of the company."
     )
+    youtube_query: str = Field(
+        ...,
+        description="create  search query for youtube video search, that can result the company related information on the youtube",
+    )
     google_rating: float = Field(
         ..., description="The company's rating on Google (out of 5)."
     )
@@ -130,6 +134,7 @@ main_messages = [
         integrate it into the final output.
 
         Always analyze the context before merging new data to ensure accuracy and consistency.
+        Note: field with list type should contains atmost 20 records, atleast can be anything.
         """,
     }
 ]
@@ -166,41 +171,30 @@ class Crawler:
             messages=[
                 {
                     "role": "system",
-                    "content": """Your task is to extract key company details from the provided structured data.
-                    Focus on the following aspects:
-
-                    1. **Basic Company Information**:
-                    - Name
-                    - Email address (official, sales, HR, etc.)
-                    - Contact numbers (mobile, general, or support lines)
-                    - Physical address (headquarters and additional office locations)
-
-                    2. **Business Operations**:
-                    - Categories of services offered
-                    - Specific products developed or sold
-                    - Industries the company serves
-
-                    3. **Company Experience & Size**:
-                    - Years in operation
-                    - Number of customers served
-                    - Number of employees
-
-                    4. **Client & Market Reputation**:
-                    - List of key clients or notable customers
-                    - Client testimonials (if available)
-                    - Case studies showcasing real-world applications of their solutions
-
-                    5. **Leadership & Management**:
-                    - Names and roles of key people in the management team
-
-                    6. **Additional Resources & Ratings**:
-                    - Product brochures (if available)
-                    - OEM partnerships (Original Equipment Manufacturers the company works with)
-                    - Google or industry ratings/reviews (if mentioned)
-
-                    Ensure that the extracted information is **structured, complete, and logically coherent**.
-                    Avoid data loss and resolve inconsistencies where necessary. Maintain accuracy while consolidating 
-                    information from different sections of the company's website.
+                    "content": """
+                                Extract and return the company details. Only include relevant data.
+                                the data should be about the following:
+                                - "name":  Company name
+                                - "email":  Official email address
+                                - "contact_numbers":  Phone numbers (mobile and general contact)
+                                - "hq_address":  Headquarters address
+                                - "locations":  Office locations
+                                - "services":  Categories of services provided
+                                - "products":  Specific products offered
+                                - "industry_types":  Industries the company serves
+                                - "experience":
+                                    - "years_in_business": Number of years in business
+                                    - "number_of_customers": Estimated number of customers
+                                    - "number_of_employees": Number of employees
+                                - "key_clients":  Notable customers or clients
+                                - "client_testimonials":  Extracted testimonials
+                                - "top_management":
+                                    - "name":  Manager's name
+                                    - "role":  Role in company
+                                - "case_studies":  Links or references to case studies
+                                - "brochure_link": URL to company brochure
+                                - "oem_partners":  List of OEM partners
+                                - "rating": Overall rating or review score if available
                     """,
                 },
                 {
@@ -274,37 +268,34 @@ class Crawler:
             if len(result.markdown) > 10:
                 completion = await asyncio.to_thread(
                     self.client.beta.chat.completions.parse,
-                    model="gpt-4o",
+                    model="gpt-o3-mini",
                     messages=[
                         {
                             "role": "system",
                             "content": """         
-                    Extract and return the company details in a structured JSON format. Only include relevant 
-                    and verifiable data. Exclude redundant or ambiguous information. The output should have the 
-                    following keys:
-
-                    - "name": (string) Company name
-                    - "email": (string, optional) Official email address
-                    - "contact_numbers": (list of strings, optional) Phone numbers (mobile and general contact)
-                    - "hq_address": (string, optional) Headquarters address
-                    - "locations": (list of strings, optional) Office locations
-                    - "services": (list of strings, optional) Categories of services provided
-                    - "products": (list of strings, optional) Specific products offered
-                    - "industry_types": (list of strings, optional) Industries the company serves
-                    - "experience": (dict, optional)
-                        - "years_in_business": (integer, optional) Number of years in business
-                        - "number_of_customers": (integer, optional) Estimated number of customers
-                        - "number_of_employees": (integer, optional) Number of employees
-                    - "key_clients": (list of strings, optional) Notable customers or clients
-                    - "client_testimonials": (list of strings, optional) Extracted testimonials
-                    - "top_management": (list of dicts, optional)
-                        - "name": (string) Manager's name
-                        - "role": (string) Role in company
-                    - "case_studies": (list of strings, optional) Links or references to case studies
-                    - "brochure_link": (string, optional) URL to company brochure
-                    - "oem_partners": (list of strings, optional) List of OEM partners
-                    - "rating": (float, optional) Overall rating or review score if available
-
+                                Extract and return the company details. Only include relevant data.
+                                the data should be about the following:
+                                - "name":  Company name
+                                - "email":  Official email address
+                                - "contact_numbers":  Phone numbers (mobile and general contact)
+                                - "hq_address":  Headquarters address
+                                - "locations":  Office locations
+                                - "services":  Categories of services provided
+                                - "products":  Specific products offered
+                                - "industry_types":  Industries the company serves
+                                - "experience":
+                                    - "years_in_business": Number of years in business
+                                    - "number_of_customers": Estimated number of customers
+                                    - "number_of_employees": Number of employees
+                                - "key_clients":  Notable customers or clients
+                                - "client_testimonials":  Extracted testimonials
+                                - "top_management":
+                                    - "name":  Manager's name
+                                    - "role":  Role in company
+                                - "case_studies":  Links or references to case studies
+                                - "brochure_link": URL to company brochure
+                                - "oem_partners":  List of OEM partners
+                                - "rating": Overall rating or review score if available
                     """,
                         },
                         {
