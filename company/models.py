@@ -3,10 +3,10 @@ from django.db import models
 
 
 class Company(models.Model):
-    name = models.CharField(max_length=255, unique=True)  # Unique company name
+    name = models.CharField(unique=True)  # Unique company name
     email = models.EmailField(blank=True, null=True)
-    mobile_number = models.CharField(max_length=20, blank=True, null=True)
-    general_contact_number = models.CharField(max_length=20, blank=True, null=True)
+    mobile_number = models.CharField(blank=True, null=True)
+    general_contact_number = models.CharField(blank=True, null=True)
     hq_address = RichTextField()
     locations = RichTextField()  # Store multiple office locations
 
@@ -38,7 +38,7 @@ class Company(models.Model):
     # top_3_competitors_websites = models.JSONField(
     #     default=list
     # )  # Store competitor websites
-    funding_status = models.CharField(max_length=255, blank=True, null=True)
+    funding_status = models.CharField(blank=True, null=True)
     google_rating = models.CharField(blank=True, null=True)  # Google rating (e.g., 4.5)
 
     website_link = models.URLField()
