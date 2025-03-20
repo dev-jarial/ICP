@@ -89,6 +89,10 @@ class CompanyDetails(BaseModel):
         ...,
         description="OEMs (Original Equipment Manufacturers) that the company collaborates with.",
     )
+    oem_partnership_status: list[str] = Field(
+        ...,
+        description="OEMs (Original Equipment Manufacturers) that the company's working status with the partners",
+    )
     brief_company_profile: str = Field(
         ...,
         description="A concise overview of the company's history, vision, and operations.",
@@ -166,8 +170,8 @@ class Crawler:
                     links.pop("base_domain", None)
 
         start_content = await asyncio.to_thread(
-            self.client.chat.completions.create,
-            model=OPENAI_MODEL,
+            self.client.beta.chat.completions.parse,
+            model="gpt-4o",
             messages=[
                 {
                     "role": "system",
@@ -202,6 +206,7 @@ class Crawler:
                     "content": f"Here is the scraped data from the company's website:\n\n{result.markdown}",
                 },
             ],
+            response_format=CompanyDetails,
         )
 
         scrapped_links = await asyncio.to_thread(
@@ -234,7 +239,7 @@ class Crawler:
             ],
             response_format=MeaningFullLinks,
         )
-        content = start_content.choices[0].message.content
+        content = start_content.choices[0].message.parsed.model_dump()
         self.memory_state.append({"role": "user", "content": f"{content}"})
 
         sorted_links = scrapped_links.choices[0].message.parsed.model_dump()
@@ -248,7 +253,7 @@ class Crawler:
         )
         # Consolidate scraped data using OpenAI
         completion = self.client.beta.chat.completions.parse(
-            model=OPENAI_MODEL,
+            model="gpt-4o",
             messages=self.memory_state,
             response_format=CompanyDetails,
         )
@@ -268,7 +273,7 @@ class Crawler:
             if len(result.markdown) > 10:
                 completion = await asyncio.to_thread(
                     self.client.beta.chat.completions.parse,
-                    model="gpt-4o-mini",
+                    model=OPENAI_MODEL,
                     messages=[
                         {
                             "role": "system",
@@ -303,7 +308,8 @@ class Crawler:
                             "content": f"Scraped data from webpage:\n\n{result.markdown}",
                         },
                     ],
+                    response_format=CompanyDetails,
                 )
-                content = completion.choices[0].message.content
+                content = completion.choices[0].message.parsed.model_dump()
 
                 memory.append({"role": "user", "content": f"{content}"})
