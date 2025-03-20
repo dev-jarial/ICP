@@ -7,8 +7,10 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import redirect, render
 
+from utils.google_rating import google_rating
 from utils.list_str import listToStr
 from utils.script import Crawler
+from utils.youtube import get_videos_from_query
 
 from .forms import CompanyForm, CompanyUploadForm
 from .models import Company
@@ -77,13 +79,17 @@ def company_form_view(request):
                             scraped_data.get("operating_countries")
                         ),
                         "funding_status": scraped_data.get("funding_status"),
-                        "google_rating": scraped_data.get("google_rating"),
+                        "youtube_videos": listToStr(
+                            get_videos_from_query(
+                                query=scraped_data.get("youtube_query"), n=2
+                            )
+                        ),
+                        "google_rating": google_rating(scraped_data.get("name")),
                     }
                     company, created = Company.objects.update_or_create(
                         website_link=website_link,
                         defaults=format_data,
                     )
-
                 except Exception as e:
                     print(e)
                     error = f"Failed to scrape data: {str(e)}"
