@@ -2,7 +2,8 @@ import asyncio
 import json
 from typing import List
 
-from crawl4ai import AsyncWebCrawler, BrowserConfig, CacheMode, CrawlerRunConfig
+import validators
+from crawl4ai import AsyncWebCrawler, BrowserConfig, CrawlerRunConfig
 from crawl4ai.content_filter_strategy import PruningContentFilter
 from crawl4ai.markdown_generation_strategy import DefaultMarkdownGenerator
 from openai import OpenAI
@@ -265,35 +266,53 @@ class Crawler:
 
     async def scrape_page(self, link, memory):
         """Scrape a single page using the crawler in a separate thread."""
-        async with AsyncWebCrawler(config=self.browser_config) as crawler:
-            result = await crawler.arun(url=link, config=self.config)
 
-        if len(result.markdown) > 10:
-            completion = await asyncio.to_thread(
-                self.client.beta.chat.completions.parse,
-                model="gpt-4o",
-                messages=[
-                    {
-                        "role": "system",
-                        "content": """         
-                            Please extract the relevant details about the company from the following 
-                            information. Focus on the company's name, email address, contact number, and physical address. Identify the 
-                            various locations where the company has offices. List the categories of services offered, along with 
-                            any specific products the company provides. Also, extract the types of industries the company serves.
-                            Include details about the company’s experience, such as how long it has been in business, the 
-                            number of customers it serves, and the number of employees it has. Make sure to mention any key 
-                            clients or notable customers. If there are any client testimonials, include them as well. Identify
-                            the key people in the management team and list their roles. Lastly, check for any case studies, 
-                            brochures, or OEM details, and include a rating or review if available.
-                """,
-                    },
-                    {
-                        "role": "user",
-                        "content": f"Scraped data from webpage:\n\n{result.markdown}",
-                    },
-                ],
-                response_format=CompanyDetails,
-            )
-            content = completion.choices[0].message.parsed.model_dump()
+        if validators.url(link):
+            async with AsyncWebCrawler(config=self.browser_config) as crawler:
+                result = await crawler.arun(url=link, config=self.config)
 
-            memory.append({"role": "user", "content": f"{content}"})
+            if len(result.markdown) > 10:
+                completion = await asyncio.to_thread(
+                    self.client.beta.chat.completions.parse,
+                    model="gpt-4o",
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": """         
+                    Extract and return the company details in a structured JSON format. Only include relevant 
+                    and verifiable data. Exclude redundant or ambiguous information. The output should have the 
+                    following keys:
+
+                    - "name": (string) Company name
+                    - "email": (string, optional) Official email address
+                    - "contact_numbers": (list of strings, optional) Phone numbers (mobile and general contact)
+                    - "hq_address": (string, optional) Headquarters address
+                    - "locations": (list of strings, optional) Office locations
+                    - "services": (list of strings, optional) Categories of services provided
+                    - "products": (list of strings, optional) Specific products offered
+                    - "industry_types": (list of strings, optional) Industries the company serves
+                    - "experience": (dict, optional)
+                        - "years_in_business": (integer, optional) Number of years in business
+                        - "number_of_customers": (integer, optional) Estimated number of customers
+                        - "number_of_employees": (integer, optional) Number of employees
+                    - "key_clients": (list of strings, optional) Notable customers or clients
+                    - "client_testimonials": (list of strings, optional) Extracted testimonials
+                    - "top_management": (list of dicts, optional)
+                        - "name": (string) Manager's name
+                        - "role": (string) Role in company
+                    - "case_studies": (list of strings, optional) Links or references to case studies
+                    - "brochure_link": (string, optional) URL to company brochure
+                    - "oem_partners": (list of strings, optional) List of OEM partners
+                    - "rating": (float, optional) Overall rating or review score if available
+
+                    """,
+                        },
+                        {
+                            "role": "user",
+                            "content": f"Scraped data from webpage:\n\n{result.markdown}",
+                        },
+                    ],
+                )
+                content = completion.choices[0].message.content
+
+                memory.append({"role": "user", "content": f"{content}"})
