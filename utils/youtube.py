@@ -16,12 +16,16 @@ def youtube_search(query: str, n: int = 5):
     return response["items"]
 
 
-def get_videos_from_query(query: str, n: int = 5) -> list[str]:
-    try:
-        videos = youtube_search(query, n)
-    except:
-        get_videos_from_query(query, n)
-    print(videos)
+def get_videos_from_query(query: str, n: int = 5, give=0) -> list[str]:
+    print(give)
+    if not give < 3:
+        urls = ["Not available!"]
+    else:
+        try:
+            videos = youtube_search(query, n)
+        except:
+            give += 1
+            get_videos_from_query(query, n, give)
     urls = ["https://www.youtube.com/embed/" + v["id"]["videoId"] for v in videos]
     print("============================================")
     print("Query:", query)
