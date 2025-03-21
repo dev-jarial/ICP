@@ -6,7 +6,7 @@ from asyncio.exceptions import TimeoutError
 from celery import shared_task
 from django.db import connections, transaction
 
-from utils.list_str import listToStr
+from utils.data_format import format
 from utils.script import Crawler
 
 from .models import Company
@@ -14,7 +14,7 @@ from .models import Company
 # Set up logging
 logger = logging.getLogger(__name__)
 
-# Set an explicit timeout for the scraper (e.g., 30 seconds)
+# Set an explicit timeout for the scraper (e.g., 150 seconds)
 SCRAPER_TIMEOUT = 150
 
 
@@ -43,7 +43,7 @@ def process_uploaded_file(valid_urls):
                 logger.warning(f"⚠️ Unexpected data format from scraper: {website_link}")
                 continue  # Skip invalid data
 
-            format_data = data_formatter(scraped_data)
+            format_data = format(scraped_data)
             logger.info(f"✅ scrapped data: \n{format_data}")
             # Ensure atomic database transaction
 
@@ -69,34 +69,3 @@ async def scrape_with_timeout(url):
     except Exception as e:
         logger.error(f"❌ Scraper error for {url}: {e}")
         return {}  # Return empty to indicate failure
-
-
-def data_formatter(scraped_data):
-    format_data = {
-        "name": scraped_data.get("name"),
-        "email": scraped_data.get("email"),
-        "mobile_number": scraped_data.get("mobile_number"),
-        "general_contact_number": scraped_data.get("general_contact_number"),
-        "hq_address": listToStr(scraped_data.get("hq_address")),
-        "locations": listToStr(scraped_data.get("locations_offices")),
-        "key_capabilities": listToStr(scraped_data.get("key_capabilities")),
-        "products": listToStr(scraped_data.get("products")),
-        "industry_types": listToStr(scraped_data.get("industry_types")),
-        "partner_category": listToStr(scraped_data.get("partner_category")),
-        "number_of_years": scraped_data.get("number_of_years"),
-        "number_of_customers": scraped_data.get("number_of_customers"),
-        "number_of_employees": scraped_data.get("number_of_employees"),
-        "top_customer_names": listToStr(scraped_data.get("top_customer_names")),
-        "case_studies": listToStr(scraped_data.get("case_studies")),
-        "product_brochure_link": scraped_data.get("product_brochure"),
-        "client_testimonials": listToStr(scraped_data.get("client_testimonials")),
-        "oems_working_with": listToStr(scraped_data.get("oems_working_with")),
-        "brief_company_profile": scraped_data.get("brief_company_profile"),
-        "top_management_details": listToStr(scraped_data.get("top_management_details")),
-        "annual_revenue": scraped_data.get("annual_revenue"),
-        "average_deal_size": scraped_data.get("average_deal_size"),
-        "operating_countries": listToStr(scraped_data.get("operating_countries")),
-        "funding_status": scraped_data.get("funding_status"),
-        "google_rating": scraped_data.get("google_rating"),
-    }
-    return format_data
