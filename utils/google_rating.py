@@ -18,7 +18,6 @@ def google_rating(name, give=0):
 
             search = GoogleSearch(params)
             results = search.get_dict()
-            print(results["knowledge_graph"])
             rating = results["knowledge_graph"]["rating"]
 
         except:
