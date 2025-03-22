@@ -1,7 +1,7 @@
 import csv
+import json
 
 import openpyxl
-from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib import admin
 from django.http import HttpResponse
@@ -72,6 +72,25 @@ def export_as_excel(modeladmin, request, queryset):
     return response
 
 
+class PrettyJSONWidget(forms.Textarea):
+    def format_value(self, value):
+        if isinstance(value, str):
+            try:
+                value = json.loads(value)
+            except Exception:
+                pass
+        if isinstance(value, list):
+            return "\n".join(value)
+        return super().format_value(value)
+
+    def value_from_datadict(self, data, files, name):
+        raw = data.get(name)
+        # Convert back to list
+        if raw:
+            return [line.strip() for line in raw.strip().split("\n") if line.strip()]
+        return []
+
+
 class CompanyAdminForm(forms.ModelForm):
     """Custom admin form with an HTML-rendered textarea for certain fields."""
 
@@ -81,18 +100,20 @@ class CompanyAdminForm(forms.ModelForm):
 
         # Apply the custom widget to specific fields that contain HTML
         widgets = {
-            "hq_address": CKEditorWidget(),
-            "locations": CKEditorWidget(),
-            "key_capabilities": CKEditorWidget(),
-            "products": CKEditorWidget(),
-            "industry_types": CKEditorWidget(),
-            "partner_category": CKEditorWidget(),
-            "top_customer_names": CKEditorWidget(),
-            "case_studies": CKEditorWidget(),
-            "client_testimonials": CKEditorWidget(),
-            "oems_working_with": CKEditorWidget(),
-            "top_management_details": CKEditorWidget(),
-            "operating_countries": CKEditorWidget(),
+            "hq_address": PrettyJSONWidget(attrs={"rows": 4}),
+            "locations": PrettyJSONWidget(attrs={"rows": 4}),
+            "key_capabilities": PrettyJSONWidget(attrs={"rows": 4}),
+            "products": PrettyJSONWidget(attrs={"rows": 4}),
+            "industry_types": PrettyJSONWidget(attrs={"rows": 4}),
+            "partner_category": PrettyJSONWidget(attrs={"rows": 4}),
+            "top_customer_names": PrettyJSONWidget(attrs={"rows": 4}),
+            "case_studies": PrettyJSONWidget(attrs={"rows": 4}),
+            "client_testimonials": PrettyJSONWidget(attrs={"rows": 4}),
+            "oems_working_with": PrettyJSONWidget(attrs={"rows": 4}),
+            "oem_partnership_status": PrettyJSONWidget(attrs={"rows": 4}),
+            "top_management_details": PrettyJSONWidget(attrs={"rows": 4}),
+            "operating_countries": PrettyJSONWidget(attrs={"rows": 4}),
+            "youtube_videos": PrettyJSONWidget(attrs={"rows": 4}),
         }
 
 
@@ -157,7 +178,7 @@ class CompanyAdmin(admin.ModelAdmin):
     def company_admin_view(self, request, company_id):
         company = get_object_or_404(Company, id=company_id)
         return render(
-            request, "admin/company_admin_view.html", {"company": company}
+            request, "admin/company_admin_view.html", {"scraped_data": company}
         )  # Updated template name
 
     def export_csv_single(self, request, company_id):

@@ -1,138 +1,212 @@
 {% extends "admin/base_site.html" %}
 {% block content %}
-<h1>Company Details</h1>
-<table class="data-table">
-    <tbody>
-        <tr>
-            <th>Company Name</th>
-            <td>{{ company.name }}</td>
-        </tr>
-        <tr>
-            <th>Email ID</th>
-            <td>{{ company.email }}</td>
-        </tr>
-        <tr>
-            <th>Mobile Number</th>
-            <td>{{ company.mobile_number }}</td>
-        </tr>
-        <tr>
-            <th>General Contact</th>
-            <td>{{ company.general_contact_number }}</td>
-        </tr>
-        <tr>
-            <th>HQ Address</th>
-            <td>
-                {{ company.hq_address | safe}}
-            </td>
-        </tr>
-        <tr>
-            <th>Years in Business</th>
-            <td>{{ company.number_of_years }}</td>
-        </tr>
-        <tr>
-            <th>Number of Employees</th>
-            <td>{{ company.number_of_employees }}</td>
-        </tr>
-        <tr>
-            <th>Number of Customers</th>
-            <td>{{ company.number_of_customers }}</td>
-        </tr>
-        <tr>
-            <th>Annual Revenue</th>
-            <td>${{ company.annual_revenue }}</td>
-        </tr>
-        <tr>
-            <th>Average Deal Size</th>
-            <td>${{ company.average_deal_size }}</td>
-        </tr>
-        <tr>
-            <th>Funding Status</th>
-            <td>{{ company.funding_status }}</td>
-        </tr>
-        <tr>
-            <th>Brief Company Profile</th>
-            <td>{{ company.brief_company_profile }}</td>
-        </tr>
-        <tr>
-            <th>Google Rating</th>
-            <td>{{ company.google_rating }}</td>
-        </tr>
-        <tr>
-            <th>Product Brochure</th>
-            <td>
-                <a href="{{ company.product_brochure }}" target="_blank">Download Brochure</a>
-            </td>
-        </tr>
-        <tr>
-            <th>Locations</th>
-            <td>
-                {{company.locations | safe}}
-            </td>
-        </tr>
-        <tr>
-            <th>Key Capabilities</th>
-            <td>
-                {{company.key_capabilities | safe}}
-            </td>
-        </tr>
-        <tr>
-            <th>Products</th>
-            <td>
-                {{ company.products | safe}}
-            </td>
-        </tr>
-        <tr>
-            <th>Industry Types</th>
-            <td>
-                {{ company.industry_types | safe}}
-            </td>
-        </tr>
-        <tr>
-            <th>Partner Categories</th>
-            <td>
-                {{ company.partner_category | safe}}
-            </td>
-        </tr>
-        <tr>
-            <th>Top Customers</th>
-            <td>
-                {{ company.top_customer_names | safe}}
-            </td>
-        </tr>
-        <tr>
-            <th>Client Testimonials</th>
-            <td>
-                {{company.client_testimonials | safe}}
-            </td>
-        </tr>
-        <tr>
-            <th>Top Management</th>
-            <td>
-                {{ company.top_management_details | safe}}
-            </td>
-        </tr>
-        <tr>
-            <th>Operating Countries</th>
-            <td>
-                {{ company.operating_countries | safe}}
-            </td>
-        </tr>
-        <tr>
-            <th>OEMs Working With</th>
-            <td>
-                {{ company.oems_working_with | safe}}
-            </td>
-        </tr>
-        <tr>
-            <th>Case Studies</th>
-            <td>
-                {{ company.case_studies | safe}}
-            </td>
-        </tr>
+
+{% if scraped_data %}
+<div class="output-container">
+    <h3>Scraped Company Data</h3>
+    <table class="data-table">
+        <tbody>
+            <tr>
+                <th>Company Name</th>
+                <td>{{ scraped_data.name }}</td>
+            </tr>
+            <tr>
+                <th>Email ID</th>
+                <td>{{ scraped_data.email }}</td>
+            </tr>
+            <tr>
+                <th>Mobile Number</th>
+                <td>{{ scraped_data.mobile_number }}</td>
+            </tr>
+            <tr>
+                <th>General Contact</th>
+                <td>{{ scraped_data.general_contact_number }}</td>
+            </tr>
+            <tr>
+                <th>HQ Address</th>
+                <td>
+                    <ul>
+                        {% for hq_address in scraped_data.hq_address %}
+                        <li>{{ hq_address }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Years in Business</th>
+                <td>{{ scraped_data.number_of_years }}</td>
+            </tr>
+            <tr>
+                <th>Number of Employees</th>
+                <td>{{ scraped_data.number_of_employees }}</td>
+            </tr>
+            <tr>
+                <th>Number of Customers</th>
+                <td>{{ scraped_data.number_of_customers }}</td>
+            </tr>
+            <tr>
+                <th>Annual Revenue</th>
+                <td>${{ scraped_data.annual_revenue }}</td>
+            </tr>
+            <tr>
+                <th>Average Deal Size</th>
+                <td>${{ scraped_data.average_deal_size }}</td>
+            </tr>
+            <tr>
+                <th>Funding Status</th>
+                <td>{{ scraped_data.funding_status }}</td>
+            </tr>
+            <tr>
+                <th>Brief Company Profile</th>
+                <td>{{ scraped_data.brief_company_profile }}</td>
+            </tr>
+            <tr>
+                <th>Google Rating</th>
+                <td>{{ scraped_data.google_rating }}</td>
+            </tr>
+            <tr>
+                <th>Product Brochure</th>
+                <td>
+                    <a href="{{ scraped_data.product_brochure_link }}" target="_blank">Download Brochure</a>
+                </td>
+            </tr>
+            <tr>
+                <th>Locations</th>
+                <td>
+                    <ul>
+                        {% for location in scraped_data.locations %}
+                        <li>{{ location }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Key Capabilities</th>
+                <td>
+                    <ul>
+                        {% for capability in scraped_data.key_capabilities %}
+                        <li>{{ capability }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Products</th>
+                <td>
+                    <ul>
+                        {% for product in scraped_data.products %}
+                        <li>{{ product }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Industry Types</th>
+                <td>
+                    <ul>
+                        {% for industry in scraped_data.industry_types %}
+                        <li>{{ industry }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Partner Categories</th>
+                <td>
+                    <ul>
+                        {% for partner in scraped_data.partner_category %}
+                        <li>{{ partner }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Top Customers</th>
+                <td>
+                    <ul>
+                        {% for customer in scraped_data.top_customer_names %}
+                        <li>{{ customer }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Client Testimonials</th>
+                <td>
+                    <ul>
+                        {% for testimonial in scraped_data.client_testimonials %}
+                        <li>{{ testimonial }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Top Management</th>
+                <td>
+                    <ul>
+                        {% for manager in scraped_data.top_management_details %}
+                        <li>{{ manager }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Operating Countries</th>
+                <td>
+                    <ul>
+                        {% for country in scraped_data.operating_countries %}
+                        <li>{{ country }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>OEMs Working With</th>
+                <td>
+                    <ul>
+                        {% for oem in scraped_data.oems_working_with %}
+                        <li>{{ oem }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>OEMs Partnership Status</th>
+                <td>
+                    <ul>
+                        {% for oem in scraped_data.oem_partnership_status %}
+                        <li>{{ oem }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Case Studies</th>
+                <td>
+                    <ul>
+                        {% for case_study in scraped_data.case_studies %}
+                        <li>{{ case_study }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Youtube Videos</th>
+                <td>
+                    <ul>
+                        {% for video in scraped_data.youtube_videos %}
+                        <li>{{ video }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
 
 
-    </tbody>
-</table>
-<br>
-<a href="/admin/company/" class="button">Back to Companies</a>
+        </tbody>
+    </table>
+
+    <!-- Display lists (like locations, capabilities, products, etc.) -->
+</div>
+{% endif %}
+<a href="/admin/company/company" class="button">Back to Companies</a>
 {% endblock %}
