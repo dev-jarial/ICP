@@ -49,7 +49,9 @@ def process_uploaded_file(valid_urls):
 
             with transaction.atomic():
                 Company.objects.update_or_create(
-                    website_link=website_link, defaults=format_data
+                    name=format_data["name"],
+                    website_link=website_link,
+                    defaults=format_data,
                 )
 
             logger.info(f"✅ Successfully processed: {website_link}")

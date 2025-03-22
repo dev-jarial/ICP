@@ -36,6 +36,7 @@ def company_form_view(request):
                     # Save scraped data to the database
                     format_data = format(scraped_data)
                     company, created = Company.objects.update_or_create(
+                        name=format_data["name"],
                         website_link=website_link,
                         defaults=format_data,
                     )
