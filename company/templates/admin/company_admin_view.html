@@ -1,5 +1,271 @@
 {% extends "admin/base_site.html" %}
 {% block content %}
+<style>
+    /* Global Styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    html,
+    body {
+        height: auto;
+        min-height: 100vh;
+        overflow-y: auto;
+        /* Ensures scrolling is allowed */
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 20px;
+        position: relative;
+    }
+
+    .company-logo {
+        position: absolute;
+        top: 20px;
+        left: 5%;
+        width: 300px;
+        height: auto;
+        z-index: 10;
+    }
+
+    /* Matrix Background Effect */
+    .matrix-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+        z-index: -1;
+    }
+
+    .matrix-text {
+        position: absolute;
+        font-size: 40px;
+        font-weight: 800;
+        color: rgb(111, 96, 96);
+        text-shadow: 0 0 8px rgb(176, 176, 176);
+        white-space: nowrap;
+        animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+        0% {
+            transform: translateY(-100vh);
+            opacity: 0;
+        }
+
+        10% {
+            opacity: 1;
+        }
+
+        100% {
+            transform: translateY(100vh);
+            opacity: 0;
+        }
+    }
+
+    /* Main Container */
+    .container {
+        position: relative;
+        background: rgba(186, 179, 179, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        max-width: 600px;
+        width: 100%;
+        border: 1px solid rgba(179, 172, 172, 0.2);
+        animation: fadeIn 1s ease-in-out;
+        z-index: 2;
+        margin-bottom: 20px;
+        /* Ensures spacing at the bottom */
+    }
+
+    h2 {
+        font-size: 26px;
+        color: #000000;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+
+    p {
+        color: #000000;
+        font-size: 15px;
+        margin-bottom: 20px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    input[type="text"],
+    textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid rgba(122, 103, 103, 0.3);
+        border-radius: 8px;
+        font-size: 16px;
+        transition: 0.3s;
+        outline: none;
+        background: rgba(132, 126, 126, 0.2);
+        color: #000000;
+        text-align: center;
+    }
+
+    input[type="text"]::placeholder {
+        color: #392626;
+    }
+
+    input[type="text"]:focus {
+        background: #cbc6c6;
+        box-shadow: 0 0 8px rgba(159, 152, 152, 0.5);
+    }
+
+    .btn-primary {
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        color: rgb(0, 0, 0);
+        background: linear-gradient(135deg, #ff7eb3, #ff758c);
+        transition: all 0.3s ease-in-out;
+        cursor: pointer;
+    }
+
+    .btn-primary:hover {
+        transform: scale(1.05);
+        background: linear-gradient(135deg, #ff758c, #ff4f70);
+    }
+
+    /* Loading Spinner */
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(125, 26, 26, 0.3);
+        border-top: 4px solid rgb(0, 0, 0);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 10px auto;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Scraped Data Output */
+    .output-container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+        max-width: 70%;
+        width: 100%;
+        color: rgb(0, 0, 0);
+        text-align: left;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .data-table th,
+    .data-table td {
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 8px;
+        text-align: left;
+        color: rgb(0, 0, 0);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .container {
+            max-width: 90%;
+            padding: 30px;
+        }
+        .output-container {
+            max-width: 80%;
+            width: 90%;
+        }
+        h2 {
+            font-size: 22px;
+        }
+
+        p {
+            font-size: 14px;
+        }
+
+        input[type="text"] {
+            font-size: 14px;
+            padding: 10px;
+        }
+
+        .btn-primary {
+            font-size: 14px;
+            padding: 10px;
+        }
+
+        .matrix-text {
+            font-size: 25px;
+        }
+        .company-logo {
+            width: 150px; /* Adjust for smaller screens */
+        }
+    }
+
+    @media (max-width: 480px) {
+        .container {
+            max-width: 95%;
+            padding: 25px;
+        }
+
+        h2 {
+            font-size: 20px;
+        }
+
+        p {
+            font-size: 13px;
+        }
+
+        input[type="text"] {
+            font-size: 13px;
+            padding: 8px;
+        }
+
+        .btn-primary {
+            font-size: 13px;
+            padding: 8px;
+        }
+
+        .matrix-text {
+            font-size: 20px;
+        }
+    }
+</style>
+
 
 {% if scraped_data %}
 <div class="output-container">
