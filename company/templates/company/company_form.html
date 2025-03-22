@@ -307,7 +307,11 @@
             <tr>
                 <th>HQ Address</th>
                 <td>
-                    {{ scraped_data.hq_address | safe}}
+                    <ul>
+                        {% for hq_address in scraped_data.hq_address %}
+                        <li>{{ hq_address }}</li>
+                        {% endfor %}
+                    </ul>
                 </td>
             </tr>
             <tr>
@@ -345,85 +349,137 @@
             <tr>
                 <th>Product Brochure</th>
                 <td>
-                    <a href="{{ scraped_data.product_brochure }}" target="_blank">Download Brochure</a>
+                    <a href="{{ scraped_data.product_brochure_link }}" target="_blank">Download Brochure</a>
                 </td>
             </tr>
             <tr>
                 <th>Locations</th>
                 <td>
-                    {{scraped_data.locations | safe}}
+                    <ul>
+                        {% for location in scraped_data.locations %}
+                        <li>{{ location }}</li>
+                        {% endfor %}
+                    </ul>
                 </td>
             </tr>
             <tr>
                 <th>Key Capabilities</th>
                 <td>
-                    {{scraped_data.key_capabilities | safe}}
+                    <ul>
+                        {% for capability in scraped_data.key_capabilities %}
+                        <li>{{ capability }}</li>
+                        {% endfor %}
+                    </ul>
                 </td>
             </tr>
             <tr>
                 <th>Products</th>
                 <td>
-                    {{ scraped_data.products | safe}}
+                    <ul>
+                        {% for product in scraped_data.products %}
+                        <li>{{ product }}</li>
+                        {% endfor %}
+                    </ul>
                 </td>
             </tr>
             <tr>
                 <th>Industry Types</th>
                 <td>
-                    {{ scraped_data.industry_types | safe}}
+                    <ul>
+                        {% for industry in scraped_data.industry_types %}
+                        <li>{{ industry }}</li>
+                        {% endfor %}
+                    </ul>
                 </td>
             </tr>
             <tr>
                 <th>Partner Categories</th>
                 <td>
-                    {{ scraped_data.partner_category | safe}}
+                    <ul>
+                        {% for partner in scraped_data.partner_category %}
+                        <li>{{ partner }}</li>
+                        {% endfor %}
+                    </ul>
                 </td>
             </tr>
             <tr>
                 <th>Top Customers</th>
                 <td>
-                    {{ scraped_data.top_customer_names | safe}}
+                    <ul>
+                        {% for customer in scraped_data.top_customer_names %}
+                        <li>{{ customer }}</li>
+                        {% endfor %}
+                    </ul>
                 </td>
             </tr>
             <tr>
                 <th>Client Testimonials</th>
                 <td>
-                    {{scraped_data.client_testimonials | safe}}
+                    <ul>
+                        {% for testimonial in scraped_data.client_testimonials %}
+                        <li>{{ testimonial }}</li>
+                        {% endfor %}
+                    </ul>
                 </td>
             </tr>
             <tr>
                 <th>Top Management</th>
                 <td>
-                    {{ scraped_data.top_management_details | safe}}
+                    <ul>
+                        {% for manager in scraped_data.top_management_details %}
+                        <li>{{ manager }}</li>
+                        {% endfor %}
+                    </ul>
                 </td>
             </tr>
             <tr>
                 <th>Operating Countries</th>
                 <td>
-                    {{ scraped_data.operating_countries | safe}}
+                    <ul>
+                        {% for country in scraped_data.operating_countries %}
+                        <li>{{ country }}</li>
+                        {% endfor %}
+                    </ul>
                 </td>
             </tr>
             <tr>
                 <th>OEMs Working With</th>
                 <td>
-                    {{ scraped_data.oems_working_with | safe}}
+                    <ul>
+                        {% for oem in scraped_data.oems_working_with %}
+                        <li>{{ oem }}</li>
+                        {% endfor %}
+                    </ul>
                 </td>
             </tr>
             <tr>
                 <th>OEMs Partnership Status</th>
                 <td>
-                    {{ scraped_data.oem_partnership_status | safe}}
+                    <ul>
+                        {% for oem in scraped_data.oem_partnership_status %}
+                        <li>{{ oem }}</li>
+                        {% endfor %}
+                    </ul>
                 </td>
             </tr>
             <tr>
                 <th>Case Studies</th>
                 <td>
-                    {{ scraped_data.case_studies | safe}}
+                    <ul>
+                        {% for case_study in scraped_data.case_studies %}
+                        <li>{{ case_study }}</li>
+                        {% endfor %}
+                    </ul>
                 </td>
             </tr>
             <tr>
                 <th>Youtube Videos</th>
                 <td>
-                    {{ scraped_data.youtube_videos | safe}}
+                    <ul>
+                        {% for video in scraped_data.youtube_videos %}
+                        <li>{{ video }}</li>
+                        {% endfor %}
+                    </ul>
                 </td>
             </tr>
             
