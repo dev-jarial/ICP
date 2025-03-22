@@ -8,7 +8,6 @@ annotated-types==0.7.0
 anyio==4.8.0
 asgiref==3.8.1
 attrs==25.1.0
-beautifulsoup4==4.13.3
 billiard==4.2.1
 cachetools==5.5.2
 celery==5.4.0
@@ -25,7 +24,6 @@ cryptography==44.0.2
 cssselect==1.2.0
 distro==1.9.0
 Django==5.1.6
-django-ckeditor==6.7.2
 django-environ==0.12.0
 django-js-asset==3.1.2
 et_xmlfile==2.0.0
@@ -39,6 +37,7 @@ google-api-core==2.24.2
 google-api-python-client==2.165.0
 google-auth==2.38.0
 google-auth-httplib2==0.2.0
+google_search_results==2.4.2
 googleapis-common-protos==1.69.2
 greenlet==3.1.1
 gunicorn==23.0.0
