@@ -100,20 +100,20 @@ class CompanyAdminForm(forms.ModelForm):
 
         # Apply the custom widget to specific fields that contain HTML
         widgets = {
-            "hq_address": PrettyJSONWidget(attrs={"rows": 4}),
-            "locations": PrettyJSONWidget(attrs={"rows": 4}),
-            "key_capabilities": PrettyJSONWidget(attrs={"rows": 4}),
-            "products": PrettyJSONWidget(attrs={"rows": 4}),
-            "industry_types": PrettyJSONWidget(attrs={"rows": 4}),
-            "partner_category": PrettyJSONWidget(attrs={"rows": 4}),
-            "top_customer_names": PrettyJSONWidget(attrs={"rows": 4}),
-            "case_studies": PrettyJSONWidget(attrs={"rows": 4}),
-            "client_testimonials": PrettyJSONWidget(attrs={"rows": 4}),
-            "oems_working_with": PrettyJSONWidget(attrs={"rows": 4}),
-            "oem_partnership_status": PrettyJSONWidget(attrs={"rows": 4}),
-            "top_management_details": PrettyJSONWidget(attrs={"rows": 4}),
-            "operating_countries": PrettyJSONWidget(attrs={"rows": 4}),
-            "youtube_videos": PrettyJSONWidget(attrs={"rows": 4}),
+            "hq_address": PrettyJSONWidget(attrs={"rows": 10, "cols": 100}),
+            "locations": PrettyJSONWidget(attrs={"rows": 10, "cols": 100}),
+            "key_capabilities": PrettyJSONWidget(attrs={"rows": 10, "cols": 100}),
+            "products": PrettyJSONWidget(attrs={"rows": 10, "cols": 100}),
+            "industry_types": PrettyJSONWidget(attrs={"rows": 10, "cols": 100}),
+            "partner_category": PrettyJSONWidget(attrs={"rows": 10, "cols": 100}),
+            "top_customer_names": PrettyJSONWidget(attrs={"rows": 10, "cols": 100}),
+            "case_studies": PrettyJSONWidget(attrs={"rows": 10, "cols": 100}),
+            "client_testimonials": PrettyJSONWidget(attrs={"rows": 10, "cols": 100}),
+            "oems_working_with": PrettyJSONWidget(attrs={"rows": 10, "cols": 100}),
+            "oem_partnership_status": PrettyJSONWidget(attrs={"rows": 10, "cols": 100}),
+            "top_management_details": PrettyJSONWidget(attrs={"rows": 10, "cols": 100}),
+            "operating_countries": PrettyJSONWidget(attrs={"rows": 10, "cols": 100}),
+            "youtube_videos": PrettyJSONWidget(attrs={"rows": 10, "cols": 100}),
         }
 
 

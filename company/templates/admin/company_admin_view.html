@@ -1,4 +1,4 @@
-{% extends "admin/base_site.html" %}
+{% load static %}
 {% block content %}
 <style>
     /* Global Styles */
@@ -175,7 +175,7 @@
 
     /* Scraped Data Output */
     .output-container {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(158, 151, 151, 0.1);
         backdrop-filter: blur(10px);
         border-radius: 15px;
         padding: 20px;
@@ -194,7 +194,7 @@
 
     .data-table th,
     .data-table td {
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        border: 1px solid rgba(220, 210, 210, 0.3);
         padding: 8px;
         text-align: left;
         color: rgb(0, 0, 0);
@@ -474,5 +474,6 @@
     <!-- Display lists (like locations, capabilities, products, etc.) -->
 </div>
 {% endif %}
-<a href="/admin/company/company" class="button">Back to Companies</a>
+<br>
+<a href="/admin/company/company" class="btn-primary">Back to Companies</a>
 {% endblock %}
