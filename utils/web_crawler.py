@@ -233,7 +233,7 @@ class Crawler:
 
         if validators.url(link):
             page_content, internal_links = SouptStart.get_page_text_and_links(self.url)
-            if len(page_content) > 10:
+            if len(page_content) > 100:
                 completion = await asyncio.to_thread(
                     self.client.beta.chat.completions.parse,
                     model="gpt-4o-mini",
