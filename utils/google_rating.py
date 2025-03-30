@@ -6,7 +6,6 @@ from icp.settings import SERP_API_KEY
 def google_rating(name, give=0):
     print(give)
     rating = None
-    rating = "Not Available!"
     if give < 3:
         try:
             params = {
