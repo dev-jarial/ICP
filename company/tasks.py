@@ -18,47 +18,45 @@ logger = logging.getLogger(__name__)
 SCRAPER_TIMEOUT = 150
 
 
-@shared_task(time_limit=600)
+@shared_task
 def process_uploaded_file(valid_urls):
     for website_link in valid_urls:
-        try:
-            # Ensure database connections are managed correctly
-            connections.close_all()
-            logger.info(f"🚀 Processing: {website_link}")
+        process_single_url.delay(website_link)
 
-            # Run the scraper asynchronously
-            scraped_data = asyncio.run(scrape_with_timeout(website_link))
 
-            # Ensure scraped_data is a valid JSON object
-            if isinstance(scraped_data, str):
-                try:
-                    scraped_data = json.loads(scraped_data)
-                except json.JSONDecodeError:
-                    logger.error(
-                        f"⚠️ Invalid JSON response from scraper: {website_link}"
-                    )
-                    continue  # Skip to the next URL
+@shared_task(time_limit=180)
+def process_single_url(website_link):
+    try:
+        connections.close_all()
+        logger.info(f"🚀 Processing: {website_link}")
 
-            if not isinstance(scraped_data, dict):
-                logger.warning(f"⚠️ Unexpected data format from scraper: {website_link}")
-                continue  # Skip invalid data
+        scraped_data = asyncio.run(scrape_with_timeout(website_link))
 
-            format_data = format(scraped_data)
-            logger.info(f"✅ scrapped data: \n{format_data}")
-            # Ensure atomic database transaction
+        if isinstance(scraped_data, str):
+            try:
+                scraped_data = json.loads(scraped_data)
+            except json.JSONDecodeError:
+                logger.error(f"⚠️ Invalid JSON response from scraper: {website_link}")
+                return
 
-            with transaction.atomic():
-                Company.objects.update_or_create(
-                    name=format_data["name"],
-                    website_link=website_link,
-                    defaults=format_data,
-                )
+        if not isinstance(scraped_data, dict):
+            logger.warning(f"⚠️ Unexpected data format from scraper: {website_link}")
+            return
 
-            logger.info(f"✅ Successfully processed: {website_link}")
+        format_data = format(scraped_data)
+        logger.info(f"✅ scrapped data: \n{format_data}")
 
-        except Exception as e:
-            logger.error(f"❌ Error processing {website_link}: {e}", exc_info=True)
-            continue  # Skip if scraping fails
+        with transaction.atomic():
+            Company.objects.update_or_create(
+                name=format_data["name"],
+                website_link=website_link,
+                defaults=format_data,
+            )
+
+        logger.info(f"✅ Successfully processed: {website_link}")
+
+    except Exception as e:
+        logger.error(f"❌ Error processing {website_link}: {e}", exc_info=True)
 
 
 async def scrape_with_timeout(url):
