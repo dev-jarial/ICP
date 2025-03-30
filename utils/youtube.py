@@ -17,16 +17,19 @@ def youtube_search(query: str, n: int = 5):
 
 
 def get_videos_from_query(query: str, n: int = 5, give=0) -> list[str]:
-    print(give)
-    if not give < 3:
-        urls = ["Not available!"]
-    else:
+    print("Attempt:", give)
+    urls = ["Not Available!"]
+
+    if give < 3:
         try:
             videos = youtube_search(query, n)
-        except:
-            give += 1
-            get_videos_from_query(query, n, give)
-    urls = ["https://www.youtube.com/embed/" + v["id"]["videoId"] for v in videos]
+            urls = [
+                "https://www.youtube.com/embed/" + v["id"]["videoId"] for v in videos
+            ]
+        except Exception as e:
+            print(f"Error occurred: {e}")
+            return get_videos_from_query(query, n, give + 1)
+
     print("============================================")
     print("Query:", query)
     print("URLS:", urls)
