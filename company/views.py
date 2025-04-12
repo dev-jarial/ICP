@@ -6,11 +6,14 @@ import validators
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import redirect, render
+from markdown import markdown
 
-from utils.data_format import format
+from utils.chat_gpt import companies_analyze
+from utils.data_format import format, format_company
+from utils.embedding import get_company_embedding, search_companies
 from utils.script import Crawler
 
-from .forms import CompanyForm, CompanyUploadForm
+from .forms import CompanyForm, CompanySearchForm, CompanyUploadForm
 from .models import Company
 from .tasks import process_uploaded_file
 
@@ -35,6 +38,8 @@ def company_form_view(request):
                         scraped_data = json.loads(scraped_data)
                     # Save scraped data to the database
                     format_data = format(scraped_data)
+                    embeddings = get_company_embedding(format_data)
+                    format_data["expertise_embedding"] = embeddings
                     company, created = Company.objects.update_or_create(
                         name=format_data["name"],
                         website_link=website_link,
@@ -53,6 +58,24 @@ def company_form_view(request):
             "message": message,
             "error": error,
         },
+    )
+
+
+def company_search_view(request):
+    result = None
+    if request.method == "POST":
+        form = CompanySearchForm(request.POST)
+        if form.is_valid():
+            company_search_query = form.cleaned_data["company_search_query"]
+            company_queryset = search_companies(company_search_query)
+            company_list = format_company(company_queryset)
+            result = markdown(companies_analyze(company_list, company_search_query))
+            print(result)
+    else:
+        form = CompanySearchForm()
+
+    return render(
+        request, "company/company_search.html", {"form": form, "result": result}
     )
 
 

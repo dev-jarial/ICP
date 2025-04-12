@@ -37,3 +37,9 @@ class CompanyUploadForm(forms.ModelForm):
                 )
 
         return uploaded_file
+
+
+class CompanySearchForm(forms.Form):
+    company_search_query = forms.CharField(
+        widget=forms.Textarea, label="Search Company"
+    )

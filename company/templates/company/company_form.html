@@ -38,26 +38,6 @@
         z-index: 10;
     }
 
-    /* Matrix Background Effect */
-    .matrix-background {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100vh;
-        overflow: hidden;
-        z-index: -1;
-    }
-
-    .matrix-text {
-        position: absolute;
-        font-size: 40px;
-        font-weight: 800;
-        color: rgb(111, 96, 96);
-        text-shadow: 0 0 8px rgb(176, 176, 176);
-        white-space: nowrap;
-        animation: fall linear infinite;
-    }
 
     @keyframes fall {
         0% {
@@ -225,11 +205,10 @@
             padding: 10px;
         }
 
-        .matrix-text {
-            font-size: 25px;
-        }
+
         .company-logo {
-            width: 150px; /* Adjust for smaller screens */
+            width: 150px;
+            /* Adjust for smaller screens */
         }
     }
 
@@ -255,10 +234,6 @@
         .btn-primary {
             font-size: 13px;
             padding: 8px;
-        }
-
-        .matrix-text {
-            font-size: 20px;
         }
     }
 </style>
@@ -482,7 +457,7 @@
                     </ul>
                 </td>
             </tr>
-            
+
 
         </tbody>
     </table>
@@ -493,28 +468,6 @@
 
 <!-- JavaScript -->
 <script>
-    const matrixContainer = document.querySelector(".matrix-background");
-    const fields = [
-        "Company Name", "Email ID", "Mobile Number", "General Contact", "HQ Address", "Locations",
-        "Key Capabilities", "Products", "Industry Types", "Partner Category", "Years in Business"
-    ];
-
-    function createFallingText() {
-        const textElement = document.createElement("div");
-        textElement.classList.add("matrix-text");
-        textElement.textContent = fields[Math.floor(Math.random() * fields.length)];
-        textElement.style.left = Math.random() * 100 + "vw";
-        textElement.style.animationDuration = Math.random() * 3 + 3 + "s";
-
-        // Adjust text position relative to scroll height
-        const scrollHeight = document.body.scrollHeight;
-        textElement.style.top = Math.random() * scrollHeight + "px";
-
-        matrixContainer.appendChild(textElement);
-        setTimeout(() => { textElement.remove(); }, 5000);
-    }
-
-    // setInterval(createFallingText, 300);
 
     document.querySelector("form").addEventListener("submit", function () {
         document.getElementById("loading-spinner").style.display = "block";

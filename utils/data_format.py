@@ -1,3 +1,5 @@
+from django.forms.models import model_to_dict
+
 from .google_rating import google_rating
 from .youtube import get_videos_from_query
 
@@ -35,3 +37,64 @@ def format(scraped_data):
         "google_rating": google_rating(scraped_data.get("name")),
     }
     return format_data
+
+
+def combine_fields_to_text(company_data: dict):
+    # combine relevant fields into a single string
+    # Combine relevant fields into a single string
+    combined_text = f"Name: {company_data['name']}, "
+    combined_text += f"Email: {company_data['email']}, "
+    combined_text += f"Mobile Number: {company_data['mobile_number']}, "
+    combined_text += (
+        f"General Contact Number: {company_data['general_contact_number']}, "
+    )
+    combined_text += f"HQ Address: {' '.join(company_data.get('hq_address', []))}, "
+    combined_text += f"Locations: {' '.join(company_data.get('locations', []))}, "
+    combined_text += (
+        f"Key Capabilities: {' '.join(company_data.get('key_capabilities', []))}, "
+    )
+    combined_text += f"Products: {' '.join(company_data.get('products', []))}, "
+    combined_text += (
+        f"Industry Types: {' '.join(company_data.get('industry_types', []))}, "
+    )
+    combined_text += (
+        f"Partner Category: {' '.join(company_data.get('partner_category', []))}, "
+    )
+    combined_text += f"Years in Business: {company_data['number_of_years']}, "
+    combined_text += f"Number of Customers: {company_data['number_of_customers']}, "
+    combined_text += f"Number of Employees: {company_data['number_of_employees']}, "
+    combined_text += (
+        f"Top Customers: {' '.join(company_data.get('top_customer_names', []))}, "
+    )
+    combined_text += f"Case Studies: {' '.join(company_data.get('case_studies', []))}, "
+    combined_text += f"Product Brochure Link: {company_data['product_brochure_link']}, "
+    combined_text += f"Client Testimonials: {' '.join(company_data.get('client_testimonials', []))}, "
+    combined_text += (
+        f"OEMs Working With: {' '.join(company_data.get('oems_working_with', []))}, "
+    )
+    combined_text += f"OEM Partnership Status: {' '.join(company_data.get('oem_partnership_status', []))}, "
+    combined_text += f"Brief Company Profile: {company_data['brief_company_profile']}, "
+    combined_text += f"Top Management Details: {' '.join(company_data.get('top_management_details', []))}, "
+    combined_text += f"Annual Revenue: {company_data['annual_revenue']}, "
+    combined_text += f"Average Deal Size: {company_data['average_deal_size']}, "
+    combined_text += f"Operating Countries: {' '.join(company_data.get('operating_countries', []))}, "
+    combined_text += f"Funding Status: {company_data['funding_status']}, "
+    combined_text += (
+        f"YouTube Videos: {' '.join(company_data.get('youtube_videos', []))}, "
+    )
+    combined_text += f"Google Rating: {company_data['google_rating']}"
+
+    return combined_text
+
+
+def format_company(company_queryset):
+    companies = [
+        model_to_dict(company, exclude=["id", "expertise_embedding"])
+        for company in company_queryset
+    ]
+
+    combined_companies = []
+    for company in companies:
+        combined_companies.append(combine_fields_to_text(company))
+
+    return combined_companies

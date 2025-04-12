@@ -1,4 +1,5 @@
 from django.db import models
+from pgvector.django import VectorField
 
 
 class Company(models.Model):
@@ -43,6 +44,9 @@ class Company(models.Model):
     google_rating = models.CharField(blank=True, null=True)  # Google rating (e.g., 4.5)
 
     website_link = models.URLField()
+
+    # Add a Vector field for embeddings
+    expertise_embedding = VectorField(dimensions=1536, null=True, default=None)
 
     class Meta:
         db_table = "company"
