@@ -58,6 +58,7 @@ jsonschema-specifications==2024.10.1
 kombu==5.4.2
 litellm==1.62.1
 lxml==5.3.1
+Markdown==3.8
 markdown-it-py==3.0.0
 MarkupSafe==3.0.2
 mdurl==0.1.2
