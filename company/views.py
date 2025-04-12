@@ -70,7 +70,6 @@ def company_search_view(request):
             company_queryset = search_companies(company_search_query)
             company_list = format_company(company_queryset)
             result = markdown(companies_analyze(company_list, company_search_query))
-            print(result)
     else:
         form = CompanySearchForm()
 
@@ -111,7 +110,6 @@ def upload_company_file(request):
                         if isinstance(value, str):
                             value = value.strip()
                             if validators.url(value):
-                                print(value)
                                 valid_urls.add(value)
 
                 if not valid_urls:

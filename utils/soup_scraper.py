@@ -40,7 +40,6 @@ class SouptStart:
             # Only consider valid HTTP URLs
             if SouptStart.is_valid_url(full_url):
                 links.add(full_url)
-        print(text)
         return text, list(links)
 
     @staticmethod

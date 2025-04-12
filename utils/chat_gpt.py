@@ -5,7 +5,6 @@ OPENAI_MODEL = "gpt-4o-mini"
 
 
 def companies_analyze(companyies_list, query):
-    print(f"\n\n{companyies_list}\n\n")
     response = client.chat.completions.create(
         model=OPENAI_MODEL,
         messages=[
@@ -45,5 +44,4 @@ def companies_analyze(companyies_list, query):
     )
 
     content = response.choices[0].message.content
-    print(content)
     return content
