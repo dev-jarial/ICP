@@ -270,7 +270,7 @@ class Crawler:
             async with AsyncWebCrawler(config=self.browser_config) as crawler:
                 result = await crawler.arun(url=link, config=self.config)
 
-            if len(result.markdown) > 100:
+            if len(result.markdown) > 1000:
                 completion = await asyncio.to_thread(
                     self.client.beta.chat.completions.parse,
                     model=OPENAI_MODEL,
