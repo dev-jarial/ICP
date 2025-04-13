@@ -23,6 +23,7 @@ def companies_analyze(companyies_list, query):
                         - Start with the company name in bold.
                         - Clearly describe why it matches the query using the provided data (capabilities, industries, certifications, etc.).
                         - Include a link to the company website if available (Markdown `[Name](url)` format).
+                        - Include some detailing like locations (where company or offices present), key capabilities, Industry types and case studies.
                     - Do **not use numbered or bulleted lists**.
                     - Do **not mention companies that are not in the provided list**.
 
@@ -36,6 +37,13 @@ def companies_analyze(companyies_list, query):
 
                     {companyies_list}
 
+                    User query:
+                    {query}
+            """.strip(),
+            },
+            {
+                "role": "user",
+                "content": f"""
                     User query:
                     {query}
             """.strip(),
