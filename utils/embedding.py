@@ -31,6 +31,6 @@ def search_companies(query):
     # Perform a vector search based on cosine similarity
     companies = Company.objects.annotate(
         similarity=CosineDistance("expertise_embedding", query_embedding)
-    ).order_by("similarity")[:10]  # Get the top 5 most similar companies
+    ).order_by("similarity")[:5]  # Get the top 5 most similar companies
 
     return companies
