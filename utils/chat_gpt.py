@@ -18,8 +18,7 @@ def companies_analyze(companyies_list, query):
                     Your task is to:
                     - Select the **3 most relevant companies** from the provided list **based strictly on the user's query**.
                     - Use **only** the information given. Do **not hallucinate or add any external facts**.
-                    - Format the response in **3 separate paragraphs**, one per company.
-                    - Each paragraph should:
+                    each company result:
                         - Start with the company name in **bold**.
                         - Clearly describe why it matches the query using the provided data, including details such as:
                             - Locations (e.g., headquarters, offices)
