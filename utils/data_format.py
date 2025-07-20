@@ -1,3 +1,5 @@
+import json
+
 from django.forms.models import model_to_dict
 
 from .google_rating import google_rating
@@ -36,6 +38,7 @@ def format(scraped_data):
         ),
         "google_rating": google_rating(scraped_data.get("name")),
     }
+    print("Formatted Data:\n", json.dumps(format_data))
     return format_data
 
 

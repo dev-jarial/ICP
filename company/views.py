@@ -1,5 +1,6 @@
 import asyncio
 import json
+import re
 
 import pandas as pd
 import validators
@@ -16,6 +17,20 @@ from utils.script import Crawler
 from .forms import CompanyForm, CompanySearchForm, CompanyUploadForm
 from .models import Company
 from .tasks import process_uploaded_file
+
+
+def remove_null_unicode(data):
+    """
+    Recursively remove null unicode (\u0000) from strings, lists, and dicts.
+    """
+    if isinstance(data, str):
+        # Remove all null unicode characters
+        return data.replace("\u0000", "")
+    elif isinstance(data, list):
+        return [remove_null_unicode(item) for item in data]
+    elif isinstance(data, dict):
+        return {k: remove_null_unicode(v) for k, v in data.items()}
+    return data
 
 
 def company_form_view(request):
@@ -36,6 +51,8 @@ def company_form_view(request):
                     # Ensure JSON is properly formatted
                     if isinstance(scraped_data, str):
                         scraped_data = json.loads(scraped_data)
+                    # Remove null unicode before formatting/saving
+                    scraped_data = remove_null_unicode(scraped_data)
                     # Save scraped data to the database
                     format_data = format(scraped_data)
                     embeddings = get_company_embedding(format_data)
