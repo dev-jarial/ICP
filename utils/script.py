@@ -9,7 +9,7 @@ from crawl4ai.markdown_generation_strategy import DefaultMarkdownGenerator
 from openai import OpenAI
 from pydantic import BaseModel, Field
 
-OPENAI_MODEL = "gpt-4o-mini"
+OPENAI_MODEL = "gpt-4o"
 
 # Step 1: Create a pruning filter
 prune_filter = PruningContentFilter(
@@ -176,29 +176,30 @@ class Crawler:
                 {
                     "role": "system",
                     "content": """
-                                Extract and return the company details. Only include relevant data.
+                                Extract and return the company details. Only include relevant data. 
+                                Do not hallucinate and add the information that is not present in the given comapny details. 
+                                if the infromation is present then catch it otherwise leave the empty.
                                 the data should be about the following:
-                                - "name":  Company name
-                                - "email":  Official email address
-                                - "contact_numbers":  Phone numbers (mobile and general contact)
-                                - "hq_address":  Headquarters address
-                                - "locations":  Office locations
-                                - "services":  Categories of services provided
-                                - "products":  Specific products offered
-                                - "industry_types":  Industries the company serves
-                                - "experience":
-                                    - "years_in_business": Number of years in business
-                                    - "number_of_customers": Estimated number of customers
-                                    - "number_of_employees": Number of employees
-                                - "key_clients":  Notable customers or clients
-                                - "client_testimonials":  Extracted testimonials
-                                - "top_management":
-                                    - "name":  Manager's name
-                                    - "role":  Role in company
-                                - "case_studies":  Links or references to case studies
-                                - "brochure_link": URL to company brochure
-                                - "oem_partners":  List of OEM partners
-                                - "rating": Overall rating or review score if available
+                                - name:  Company name
+                                - email:  Official email address
+                                - contact_numbers:  Phone numbers (mobile and general contact)
+                                - hq_address:  Headquarters address
+                                - locations:  Office locations
+                                - services:  Categories of services provided
+                                - products:  Specific products offered
+                                - industry_types:  Industries the company serves
+                                - experience:
+                                    - years_in_business: Number of years in business
+                                    - number_of_customers: Estimated number of customers
+                                    - number_of_employees: Number of employees
+                                - key_clients:  Notable customers or clients
+                                - client_testimonials:  Extracted testimonials
+                                - top_management:
+                                    - name: role
+                                - case_studies:  Links or references to case studies
+                                - brochure_link: URL to company brochure
+                                - oem_partners:  List of OEM partners
+                                - rating: Overall rating or review score if available
                     """,
                 },
                 {
@@ -277,30 +278,31 @@ class Crawler:
                     messages=[
                         {
                             "role": "system",
-                            "content": """         
-                                Extract and return the company details. Only include relevant data.
+                            "content": """
+                                Extract and return the company details. Only include relevant data. 
+                                Do not hallucinate and add the information that is not present in the given comapny details. 
+                                if the infromation is present then catch it otherwise leave the empty.
                                 the data should be about the following:
-                                - "name":  Company name
-                                - "email":  Official email address
-                                - "contact_numbers":  Phone numbers (mobile and general contact)
-                                - "hq_address":  Headquarters address
-                                - "locations":  Office locations
-                                - "services":  Categories of services provided
-                                - "products":  Specific products offered
-                                - "industry_types":  Industries the company serves
-                                - "experience":
-                                    - "years_in_business": Number of years in business
-                                    - "number_of_customers": Estimated number of customers
-                                    - "number_of_employees": Number of employees
-                                - "key_clients":  Notable customers or clients
-                                - "client_testimonials":  Extracted testimonials
-                                - "top_management":
-                                    - "name":  Manager's name
-                                    - "role":  Role in company
-                                - "case_studies":  Links or references to case studies
-                                - "brochure_link": URL to company brochure
-                                - "oem_partners":  List of OEM partners
-                                - "rating": Overall rating or review score if available
+                                - name:  Company name
+                                - email:  Official email address
+                                - contact_numbers:  Phone numbers (mobile and general contact)
+                                - hq_address:  Headquarters address
+                                - locations:  Office locations
+                                - services:  Categories of services provided
+                                - products:  Specific products offered
+                                - industry_types:  Industries the company serves
+                                - experience:
+                                    - years_in_business: Number of years in business
+                                    - number_of_customers: Estimated number of customers
+                                    - number_of_employees: Number of employees
+                                - key_clients:  Notable customers or clients
+                                - client_testimonials:  Extracted testimonials
+                                - top_management:
+                                    - name: role
+                                - case_studies:  Links or references to case studies
+                                - brochure_link: URL to company brochure
+                                - oem_partners:  List of OEM partners
+                                - rating: Overall rating or review score if available
                     """,
                         },
                         {
