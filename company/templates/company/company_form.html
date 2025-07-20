@@ -276,7 +276,9 @@
         <input type="text" name="general_contact_number" value="{{ scraped_data.general_contact_number }}">
 
         <label>HQ Address</label>
-        <textarea name="hq_address">{% for hq_address in scraped_data.hq_address %}{{ hq_address }}{% if not forloop.last %}\n{% endif %}{% endfor %}</textarea>
+        <textarea name="hq_address">{% for hq_address in scraped_data.hq_address %}
+{{ hq_address }}
+{% endfor %}</textarea>
 
         <label>Years in Business</label>
         <input type="text" name="number_of_years" value="{{ scraped_data.number_of_years }}">
@@ -306,43 +308,69 @@
         <input type="text" name="product_brochure_link" value="{{ scraped_data.product_brochure_link }}">
 
         <label>Locations</label>
-        <textarea name="locations">{% for location in scraped_data.locations %}{{ location }}{% if not forloop.last %}\n{% endif %}{% endfor %}</textarea>
+        <textarea name="locations">{% for location in scraped_data.locations %}
+{{ location }}
+{% endfor %}</textarea>
 
         <label>Key Capabilities</label>
-        <textarea name="key_capabilities">{% for capability in scraped_data.key_capabilities %}{{ capability }}{% if not forloop.last %}\n{% endif %}{% endfor %}</textarea>
+        <textarea name="key_capabilities">{% for capability in scraped_data.key_capabilities %}
+{{ capability }}
+{% endfor %}</textarea>
 
         <label>Products</label>
-        <textarea name="products">{% for product in scraped_data.products %}{{ product }}{% if not forloop.last %}\n{% endif %}{% endfor %}</textarea>
+        <textarea name="products">{% for product in scraped_data.products %}
+{{ product }}
+{% endfor %}</textarea>
 
         <label>Industry Types</label>
-        <textarea name="industry_types">{% for industry in scraped_data.industry_types %}{{ industry }}{% if not forloop.last %}\n{% endif %}{% endfor %}</textarea>
+        <textarea name="industry_types">{% for industry in scraped_data.industry_types %}
+{{ industry }}
+{% endfor %}</textarea>
 
         <label>Partner Categories</label>
-        <textarea name="partner_category">{% for partner in scraped_data.partner_category %}{{ partner }}{% if not forloop.last %}\n{% endif %}{% endfor %}</textarea>
+        <textarea name="partner_category">{% for partner in scraped_data.partner_category %}
+{{ partner }}
+{% endfor %}</textarea>
 
         <label>Top Customers</label>
-        <textarea name="top_customer_names">{% for customer in scraped_data.top_customer_names %}{{ customer }}{% if not forloop.last %}\n{% endif %}{% endfor %}</textarea>
+        <textarea name="top_customer_names">{% for customer in scraped_data.top_customer_names %}
+{{ customer }}
+{% endfor %}</textarea>
 
         <label>Client Testimonials</label>
-        <textarea name="client_testimonials">{% for testimonial in scraped_data.client_testimonials %}{{ testimonial }}{% if not forloop.last %}\n{% endif %}{% endfor %}</textarea>
+        <textarea name="client_testimonials">{% for testimonial in scraped_data.client_testimonials %}
+{{ testimonial }}
+{% endfor %}</textarea>
 
         <label>Top Management</label>
-        <textarea name="top_management_details">{% for manager in scraped_data.top_management_details %}{{ manager }}{% if not forloop.last %}\n{% endif %}{% endfor %}</textarea>
+        <textarea name="top_management_details">{% for manager in scraped_data.top_management_details %}
+{{ manager }}
+{% endfor %}</textarea>
 
         <label>Operating Countries</label>
-        <textarea name="operating_countries">{% for country in scraped_data.operating_countries %}{{ country }}{% if not forloop.last %}\n{% endif %}{% endfor %}</textarea>
+        <textarea name="operating_countries">{% for country in scraped_data.operating_countries %}
+{{ country }}
+{% endfor %}</textarea>
 
         <label>OEMs Working With</label>
-        <textarea name="oems_working_with">{% for oem in scraped_data.oems_working_with %}{{ oem }}{% if not forloop.last %}\n{% endif %}{% endfor %}</textarea>
+        <textarea name="oems_working_with">{% for oem in scraped_data.oems_working_with %}
+{{ oem }}
+{% endfor %}</textarea>
 
         <label>OEMs Partnership Status</label>
-        <textarea name="oem_partnership_status">{% for oem in scraped_data.oem_partnership_status %}{{ oem }}{% if not forloop.last %}\n{% endif %}{% endfor %}</textarea>
+        <textarea name="oem_partnership_status">{% for oem in scraped_data.oem_partnership_status %}
+{{ oem }}
+{% endfor %}</textarea>
 
         <label>Case Studies</label>
-        <textarea name="case_studies">{% for case_study in scraped_data.case_studies %}{{ case_study }}{% if not forloop.last %}\n{% endif %}{% endfor %}</textarea>
+        <textarea name="case_studies">{% for case_study in scraped_data.case_studies %}
+{{ case_study }}
+{% endfor %}</textarea>
 
         <label>Youtube Videos</label>
-        <textarea name="youtube_videos">{% for video in scraped_data.youtube_videos %}{{ video }}{% if not forloop.last %}\n{% endif %}{% endfor %}</textarea>
+        <textarea name="youtube_videos">{% for video in scraped_data.youtube_videos %}
+{{ video }}
+{% endfor %}</textarea>
 
         <button type="submit" class="btn-primary">Save Changes</button>
     </form>
